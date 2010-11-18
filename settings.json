@@ -1,7 +1,7 @@
 {
     "minecraft-host": "localhost",
     "minecraft-port": 25565,
-    "motd": "Welcome to the §aSpotify§f Minecraft server!",
+    "motd": "Welcome to the Â§aSpotifyÂ§f Minecraft server!",
     "wrapper-host": "localhost",
     "wrapper-port": 25566
 }
