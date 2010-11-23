@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpMcServer extends Thread {
+public class SpMcMinecraftStarter extends Thread {
 	private BufferedReader           stdout;
 	private BufferedReader           stderr;
 	private PrintWriter              stdin;
@@ -16,7 +16,7 @@ public class SpMcServer extends Thread {
 	private boolean                  running;
 	private int                      memory;
 	
-	public SpMcServer(int memory){
+	public SpMcMinecraftStarter(int memory){
 		this.handlers = new ArrayList<SpMcConsoleHandler>();
 		this.running  = true;
 		this.memory   = memory;
