@@ -72,11 +72,12 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     	}
     	else if(command.equals("list-warps")){
     		int n;
-    		
-			player.sendMessage(COLOR_LIGHT_BLUE + "Global warp points:");
+
+			player.sendMessage("");
+			player.sendMessage(COLOR_LIGHT_YELLOW + "Global warp points:");
 			
 			if(player.getWrapper().getWarpPoints().isEmpty()){
-				player.sendMessage(COLOR_LIGHT_BLUE + "  None");
+				player.sendMessage(COLOR_LIGHT_YELLOW + "  None");
 			}
 			
 			n = 1;
@@ -85,16 +86,17 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     			String   name     = entry.getKey();
     			Position position = entry.getValue();
     			
-    			player.sendMessage(COLOR_LIGHT_BLUE + String.format(
+    			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
     				" %2d. %s (%.2fm)", n++,
     				name, position.distance(player.getPosition())
     			));
     		}
-    		
-			player.sendMessage(COLOR_LIGHT_BLUE + "Personal warp points:");
+
+			player.sendMessage("");
+			player.sendMessage(COLOR_LIGHT_YELLOW + "Personal warp points:");
 			
 			if(player.getWarpPoints().isEmpty()){
-				player.sendMessage(COLOR_LIGHT_BLUE + "  None");
+				player.sendMessage(COLOR_LIGHT_YELLOW + "  None");
 			}
 			
 			n = 1;
@@ -103,11 +105,13 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     			String   name     = entry.getKey();
     			Position position = entry.getValue();
     			
-    			player.sendMessage(COLOR_LIGHT_BLUE + String.format(
+    			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
         			" %2d. %s (%.2fm)", n++,
         			name, position.distance(player.getPosition())
         		));
     		}
+    		
+			player.sendMessage("");
     		
     		return null;
     	}

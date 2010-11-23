@@ -16,6 +16,7 @@ public class SpMcPlayersHandler extends SpMcCommandHandler implements ChatColors
      */
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
     	if(command.equals("players")){
+			player.sendMessage("");
     		player.sendMessage(COLOR_LIGHT_YELLOW + "Online players:");
     		
     		for(Entry<String, SpMcPlayer> entry : player.getWrapper().getPlayers().entrySet()){
@@ -25,6 +26,15 @@ public class SpMcPlayersHandler extends SpMcCommandHandler implements ChatColors
     			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
         			" %s (%.2fm)", name, p.getPosition().distance(player.getPosition())
         		));
+    		}
+    		
+			player.sendMessage("");
+    		
+    		return null;
+    	}
+    	else if(command.equals("clear")){
+    		for(int i = 0; i < 20; i++){
+    			player.sendMessage("");
     		}
     		
     		return null;
