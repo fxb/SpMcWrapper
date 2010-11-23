@@ -31,7 +31,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	if(command.equals("set-global-warp")){
+    	else if(command.equals("set-global-warp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-global-warp <name>");
     			

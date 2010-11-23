@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.felixbruns.minecraft.handlers.SpMcDaytimeHandler;
+import de.felixbruns.minecraft.handlers.SpMcPlayersHandler;
 import de.felixbruns.minecraft.handlers.SpMcWarpPointHandler;
 import de.felixbruns.minecraft.protocol.Position;
 
@@ -58,6 +59,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		
 		player.addHandler(new SpMcWarpPointHandler());
 		player.addHandler(new SpMcDaytimeHandler());
+		player.addHandler(new SpMcPlayersHandler());
 		
         player.start();
 	}
