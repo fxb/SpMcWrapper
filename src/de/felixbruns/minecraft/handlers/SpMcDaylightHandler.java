@@ -4,10 +4,10 @@ import de.felixbruns.minecraft.SpMcPlayer;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketTimeUpdate;
 
-public class SpMcDaytimeHandler extends SpMcAdapter {
+public class SpMcDaylightHandler extends SpMcAdapter {
 	public Packet handleServerPacket(SpMcPlayer player, Packet packet){
 		if(packet instanceof PacketTimeUpdate){
-			((PacketTimeUpdate)packet).time = 0;
+			((PacketTimeUpdate)packet).time = 3600;
 		}
 		
 		return packet;

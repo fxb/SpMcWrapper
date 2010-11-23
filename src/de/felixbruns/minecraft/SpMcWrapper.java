@@ -7,7 +7,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import de.felixbruns.minecraft.handlers.SpMcDaytimeHandler;
+import de.felixbruns.minecraft.handlers.SpMcDaylightHandler;
 import de.felixbruns.minecraft.handlers.SpMcPlayersHandler;
 import de.felixbruns.minecraft.handlers.SpMcWarpPointHandler;
 import de.felixbruns.minecraft.protocol.Position;
@@ -62,7 +62,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		SpMcPlayer player = new SpMcPlayer(this, serverSocket, clientSocket);
 		
 		player.addHandler(new SpMcWarpPointHandler());
-		player.addHandler(new SpMcDaytimeHandler());
+		player.addHandler(new SpMcDaylightHandler());
 		player.addHandler(new SpMcPlayersHandler());
 		
         player.start();
