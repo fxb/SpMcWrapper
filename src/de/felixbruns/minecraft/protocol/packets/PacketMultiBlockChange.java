@@ -3,7 +3,11 @@ package de.felixbruns.minecraft.protocol.packets;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import de.felixbruns.minecraft.protocol.Block;
+import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
@@ -20,52 +24,54 @@ public class PacketMultiBlockChange extends Packet {
 	@ProtocolField(name = "Size")
 	public short size;
 	
-	@ProtocolField(name = "Coordinate Array")
-	public short[] coordinates;
+	@ProtocolField(name = "Blocks")
+	public List<Block> blocks;
 	
-	@ProtocolField(name = "Type Array")
-	public byte[] types;
-	
-	@ProtocolField(name = "Metadata Array")
-	public byte[] metadata;
-	
-	@ProtocolReadHelper(name = "Coordinate Array")
-	public void readCoordinates(DataInputStream stream) throws IOException {
-		this.coordinates = new short[this.size];
+	@ProtocolReadHelper(name = "Blocks")
+	public void readBlocks(DataInputStream stream) throws IOException {
+		this.blocks = new ArrayList<Block>(this.size);
 		
 		for(int i = 0; i < this.size; i++){
-			this.coordinates[i] = stream.readShort();
+			this.blocks.add(new Block());
+		}
+		
+		for(int i = 0; i < this.size; i++){
+			short coordinates = stream.readShort();
+			
+			this.blocks.get(i).position = new Position(
+				(coordinates & 0xF000) >> 12,
+				(coordinates & 0x00FF),
+				(coordinates & 0x0F00) >>  8
+			);
+		}
+		
+		for(int i = 0; i < this.size; i++){
+			this.blocks.get(i).type = stream.readByte();
+		}
+		
+		for(int i = 0; i < this.size; i++){
+			this.blocks.get(i).metadata = stream.readByte();
 		}
 	}
 	
-	@ProtocolWriteHelper(name = "Coordinate Array")
-	public void writeCoordinates(DataOutputStream stream) throws IOException {
+	@ProtocolWriteHelper(name = "Blocks")
+	public void writeBlocks(DataOutputStream stream) throws IOException {
 		for(int i = 0; i < this.size; i++){
-			stream.writeShort(this.coordinates[i]);
+			Position p = this.blocks.get(i).position;
+			
+			stream.writeShort(
+				((short)p.x << 12) |
+				((short)p.z <<  8) |
+				((short)p.y)
+			);
 		}
-	}
-	
-	@ProtocolReadHelper(name = "Type Array")
-	public void readTypes(DataInputStream stream) throws IOException {
-		this.types = new byte[this.size];
 		
-		stream.read(this.types);
-	}
-	
-	@ProtocolWriteHelper(name = "Type Array")
-	public void writeTypes(DataOutputStream stream) throws IOException {
-		stream.write(this.types);
-	}
-	
-	@ProtocolReadHelper(name = "Metadata Array")
-	public void readMetadata(DataInputStream stream) throws IOException {
-		this.metadata = new byte[this.size];
+		for(int i = 0; i < this.size; i++){
+			stream.write(this.blocks.get(i).type);
+		}
 		
-		stream.read(this.metadata);
-	}
-	
-	@ProtocolWriteHelper(name = "Metadata Array")
-	public void writeMetadata(DataOutputStream stream) throws IOException {
-		stream.write(this.metadata);
+		for(int i = 0; i < this.size; i++){
+			stream.write(this.blocks.get(i).metadata);
+		}
 	}
 }

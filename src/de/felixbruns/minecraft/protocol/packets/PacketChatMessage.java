@@ -7,4 +7,12 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 public class PacketChatMessage extends Packet {
 	@ProtocolField(name = "Message")
 	public String message;
+	
+	public PacketChatMessage(){
+		this("");
+	}
+	
+	public PacketChatMessage(String message){
+		this.message = message;
+	}
 }

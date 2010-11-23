@@ -1,5 +1,6 @@
 package de.felixbruns.minecraft.protocol.packets;
 
+import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
@@ -19,4 +20,12 @@ public class PacketPlayerPosition extends Packet {
 	
 	@ProtocolField(name = "On Ground")
 	public boolean onGround;
+	
+	public Position getPosition(){
+		return new Position(this.x, this.y, this.z);
+	}
+	
+	public String toString(){
+		return this.getPosition().toString();
+	}
 }
