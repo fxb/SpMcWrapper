@@ -1,6 +1,9 @@
 package de.felixbruns.minecraft.handlers;
 
+import java.util.Map.Entry;
+
 import de.felixbruns.minecraft.SpMcPlayer;
+import de.felixbruns.minecraft.SpMcSettings;
 import de.felixbruns.minecraft.protocol.ChatColors;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
@@ -15,7 +18,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
      * @param args     The arguments to the command.
      */
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
-    	if(command.equals("add-warp")){
+    	if(command.equals("set-warp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-warp <name>");
     			
@@ -24,9 +27,11 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().put(args[0], player.getPosition());
     		
+    		SpMcSettings.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		
     		return null;
     	}
-    	if(command.equals("add-global-warp")){
+    	if(command.equals("set-global-warp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-global-warp <name>");
     			
@@ -34,6 +39,8 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		}
     		
     		player.getWrapper().getWarpPoints().put(args[0], player.getPosition());
+    		
+    		SpMcSettings.saveWarpPoints(player.getWrapper().getWarpPoints());
     		
     		return null;
     	}
@@ -46,6 +53,8 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().remove(args[0]);
     		
+    		SpMcSettings.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		
     		return null;
     	}
     	else if(command.equals("delete-global-warp")){
@@ -57,9 +66,11 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWrapper().getWarpPoints().remove(args[0]);
     		
+    		SpMcSettings.saveWarpPoints(player.getWrapper().getWarpPoints());
+    		
     		return null;
     	}
-    	else if(command.equals("list-warp")){
+    	else if(command.equals("list-warps")){
     		int n;
     		
 			player.sendMessage(COLOR_LIGHT_BLUE + "Global warp points:");
@@ -70,10 +81,14 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
 			
 			n = 1;
 			
-    		for(String name : player.getWrapper().getWarpPoints().keySet()){
+    		for(Entry<String, Position> entry : player.getWrapper().getWarpPoints().entrySet()){
+    			String   name     = entry.getKey();
+    			Position position = entry.getValue();
+    			
     			player.sendMessage(COLOR_LIGHT_BLUE + String.format(
-    				" %2d. %s", n++, name)
-    			);
+    				" %2d. %s (%.2fm)", n++,
+    				name, position.distance(player.getPosition())
+    			));
     		}
     		
 			player.sendMessage(COLOR_LIGHT_BLUE + "Personal warp points:");
@@ -84,10 +99,14 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
 			
 			n = 1;
 			
-    		for(String name : player.getWarpPoints().keySet()){
+    		for(Entry<String, Position> entry : player.getWarpPoints().entrySet()){
+    			String   name     = entry.getKey();
+    			Position position = entry.getValue();
+    			
     			player.sendMessage(COLOR_LIGHT_BLUE + String.format(
-    				" %2d. %s %f", n++, name, player.getWarpPoints().get(name).distance(player.getPosition()))
-    			);
+        			" %2d. %s (%.2fm)", n++,
+        			name, position.distance(player.getPosition())
+        		));
     		}
     		
     		return null;
@@ -149,14 +168,6 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
 	private void warp(SpMcPlayer player, Position target){
 		PacketPlayerPositionAndLook packet = new PacketPlayerPositionAndLook();
 		
-		/*PacketAddToInventory add = new PacketAddToInventory();
-		
-		add.item  = 7;
-		add.count = 64;
-		add.life  = 0;
-		
-		player.sendToClient(add);*/
-		
 		/* Fill the packet with position information. */
 		packet.x        = player.getPosition().x;
 		packet.z        = player.getPosition().z;
@@ -164,27 +175,30 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
 		packet.pitch    = 0.0f;
 		packet.onGround = false;
 		
-		/* Fool the server by sending a packet with a Y axis value of 128. */
-		packet.y        = 128.0;
-		packet.stance   = 128.0 + 1.62;
+		/* First move up to level 128. */
+		packet.y      = 128.0;
+		packet.stance = 128.0 + 1.62;
 		
 		player.sendToServer(packet);
 		
-		/* Fool the server by sending a packet with a Y axis value of 128. */
-		packet.x        = target.x;
-		packet.z        = target.z;
+		/* Then move sideways to the target location. */
+		packet.x = target.x;
+		packet.z = target.z;
 		
 		player.sendToServer(packet);
 		
-		/* Now send the actual right Y axis value to both the server and the client. */
-		packet.y        = target.y;
-		packet.stance   = target.y + 1.62;
+		/* Now move down to the target level. */
+		packet.y      = target.y;
+		packet.stance = target.y + 1.62;
 		
 		player.sendToServer(packet);
 		
-		/* We need to swap Y and stance here... (see protocol specification). */
-		packet.y        = target.y + 1.62;
-		packet.stance   = target.y;
+		/*
+		 * Also send that packet to the client, but swap
+		 * Y and stance here... (see protocol specification).
+		 */
+		packet.y      = target.y + 1.62;
+		packet.stance = target.y;
 		
 		player.sendToClient(packet);
 	}

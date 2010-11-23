@@ -1,21 +1,11 @@
 package de.felixbruns.minecraft;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-import org.json.JSONWriter;
 
 import de.felixbruns.minecraft.handlers.SpMcHandler;
 import de.felixbruns.minecraft.protocol.PacketStream;
@@ -105,68 +95,6 @@ public class SpMcPlayer {
 		return this.warpPoints;
 	}
 	
-	public void loadWarpPoints(){
-		try {
-			File      file = new File("./warp-points/" + this.username + ".json");
-			JSONArray data = new JSONArray(new JSONTokener(new FileReader(file)));
-			
-			this.warpPoints.clear();
-			
-			for(int i = 0; i < data.length(); i++){
-				JSONObject point    = data.getJSONObject(i);
-				String     name     = point.getString("name");
-				JSONObject position = point.getJSONObject("position");
-				
-				double x = position.getDouble("x");
-				double y = position.getDouble("y");
-				double z = position.getDouble("z");
-				
-				this.warpPoints.put(name, new Position(x, y, z));
-			}
-		}
-		catch(IOException e){
-			
-		}
-		catch(JSONException e){
-			
-		}
-	}
-	
-	public void saveWarpPoints(){
-		try {
-			File       file   = new File("./warp-points/" + this.username + ".json");
-			FileWriter writer = new FileWriter(file);
-			JSONWriter data   = new JSONWriter(writer);
-			
-			data.array();
-			
-			for(Entry<String, Position> entry : this.warpPoints.entrySet()){
-				String   name     = entry.getKey();
-				Position position = entry.getValue();
-				
-				data.object()
-					.key("name").value(name)
-					.key("position").object()
-						.key("x").value(position.x)
-						.key("y").value(position.y)
-						.key("z").value(position.z)
-					.endObject()
-				.endObject();
-			}
-			
-			data.endArray();
-			
-			writer.close();
-		}
-		catch(IOException e){
-			e.printStackTrace();
-		}
-		catch(JSONException e){
-
-			e.printStackTrace();	
-		}
-	}
-	
 	/**
 	 * Add a handler for handling packets.
 	 * 
@@ -232,19 +160,13 @@ public class SpMcPlayer {
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
 			this.wrapper.getPlayers().remove(this.username);
-			
-			this.saveWarpPoints();
 		}
 		/* Keep track of the players position. */
 		else if(packet instanceof PacketPlayerPosition){
 			this.position = ((PacketPlayerPosition)packet).getPosition();
-			
-			System.out.println("Client: " + packet);
 		}
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
-			
-			System.out.println("Client: " + packet);
 		}
 		
 		/* Notify any external handlers. */
@@ -277,19 +199,15 @@ public class SpMcPlayer {
 			
 			this.wrapper.getPlayers().put(this.username, this);
 			
-			this.loadWarpPoints();
+			this.warpPoints = SpMcSettings.loadWarpPoints(this.username);
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
 			this.wrapper.getPlayers().remove(this.username);
-			
-			this.saveWarpPoints();
 		}
 		/* Keep track of the players position. */
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
-			
-			System.out.println("Server: " + packet);
 		}
 		
 		/* Notify any external handlers. */
@@ -377,8 +295,6 @@ public class SpMcPlayer {
 	    			}
 		        }
 		        catch(IOException e){
-					SpMcPlayer.this.saveWarpPoints();
-					
 		        	System.err.println("Lost connection!");
 		        	
 		        	return;

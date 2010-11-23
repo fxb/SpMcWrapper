@@ -5,16 +5,24 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.json.JSONWriter;
+
+import de.felixbruns.minecraft.protocol.Position;
 
 public class SpMcSettings {
 	private File       file;
 	private JSONObject data;
 	
-	private static final String SETTINGS_FILENAME = "settings.json";
+	private static final String SETTINGS_FILENAME     = "settings.json";
+	private static final String WARP_POINTS_DIRECTORY = "warp-points";
 	
 	private static SpMcSettings instance;
 	
@@ -105,5 +113,78 @@ public class SpMcSettings {
         catch(JSONException e){
         	/* Ignore. */
         }
+	}
+	
+	public static Map<String, Position> loadWarpPoints(){
+		return loadWarpPoints("__global__");
+	}
+	
+	public static Map<String, Position> loadWarpPoints(String username){
+		Map<String, Position> warpPoints = new HashMap<String, Position>();
+		
+		try {
+			JSONArray data = new JSONArray(new JSONTokener(
+				new FileReader(WARP_POINTS_DIRECTORY + "/" + username + ".json"))
+			);
+			
+			for(int i = 0; i < data.length(); i++){
+				JSONObject point    = data.getJSONObject(i);
+				String     name     = point.getString("name");
+				JSONObject position = point.getJSONObject("position");
+				
+				double x = position.getDouble("x");
+				double y = position.getDouble("y");
+				double z = position.getDouble("z");
+				
+				warpPoints.put(name, new Position(x, y, z));
+			}
+		}
+		catch(IOException e){
+			/* Ignore. */
+		}
+		catch(JSONException e){
+			/* Ignore. */
+		}
+		
+		return warpPoints;
+	}
+	
+	public static void saveWarpPoints(Map<String, Position> warpPoints){
+		saveWarpPoints("__global__", warpPoints);
+	}
+	
+	public static void saveWarpPoints(String username, Map<String, Position> warpPoints){
+		try {
+			new File(WARP_POINTS_DIRECTORY).mkdirs();
+			
+			FileWriter writer = new FileWriter(WARP_POINTS_DIRECTORY + "/" + username + ".json");
+			JSONWriter data   = new JSONWriter(writer);
+			
+			data.array();
+			
+			for(Entry<String, Position> entry : warpPoints.entrySet()){
+				String   name     = entry.getKey();
+				Position position = entry.getValue();
+				
+				data.object()
+					.key("name").value(name)
+					.key("position").object()
+						.key("x").value(position.x)
+						.key("y").value(position.y)
+						.key("z").value(position.z)
+					.endObject()
+				.endObject();
+			}
+			
+			data.endArray();
+			
+			writer.close();
+		}
+		catch(IOException e){
+			/* Ignore. */
+		}
+		catch(JSONException e){
+			/* Ignore. */
+		}
 	}
 }

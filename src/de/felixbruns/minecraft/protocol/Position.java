@@ -28,6 +28,6 @@ public class Position {
 	}
 	
 	public String toString(){
-		return String.format("(%f, %f, %f)", this.x, this.y, this.z);
+		return String.format("(%.2f | %.2f | %.2f)", this.x, this.y, this.z);
 	}
 }

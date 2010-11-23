@@ -25,7 +25,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		
 		/* Initialize client and warp point maps. */
 		this.players    = new HashMap<String, SpMcPlayer>();
-		this.warpPoints = new HashMap<String, Position>();
+		this.warpPoints = SpMcSettings.loadWarpPoints();
 		
 		/* Create and bind wrapper server. */
 		this.wrapper = new ServerSocket(wrapperPort, 50, InetAddress.getByName(wrapperHost));
