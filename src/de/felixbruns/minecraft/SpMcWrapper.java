@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.felixbruns.minecraft.handlers.SpMcDaytimeHandler;
-import de.felixbruns.minecraft.handlers.SpMcPlaceHandler;
 import de.felixbruns.minecraft.handlers.SpMcWarpPointHandler;
 import de.felixbruns.minecraft.protocol.Position;
 
