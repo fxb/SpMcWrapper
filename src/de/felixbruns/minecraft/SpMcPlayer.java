@@ -260,6 +260,8 @@ public class SpMcPlayer {
 		 *                  {@link SpMcReadWriteThread#DIRECTION_SERVER_CLIENT}.
 		 */
 		public SpMcReadWriteThread(int direction){
+			super("SpMcReadWriteThread");
+			
 			if(direction != DIRECTION_CLIENT_SERVER && direction != DIRECTION_SERVER_CLIENT){
 				throw new IllegalArgumentException("Unknown mode given!");
 			}
@@ -295,7 +297,9 @@ public class SpMcPlayer {
 	    			}
 		        }
 		        catch(IOException e){
-		        	System.err.println("Lost connection!");
+					SpMcPlayer.this.wrapper.getPlayers().remove(SpMcPlayer.this.username);
+					
+		        	System.err.println("Lost connection to " + SpMcPlayer.this.username + "!");
 		        	
 		        	return;
 		        }

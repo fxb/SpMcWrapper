@@ -17,10 +17,14 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	private int          port;
 	private ServerSocket wrapper;
 	
+	public SpMcMinecraftStarter starter;
+	
 	private Map<String, SpMcPlayer> players;
 	private Map<String, Position>   warpPoints;
 	
 	public SpMcWrapper(String host, int port, String wrapperHost, int wrapperPort) throws IOException {
+		super("SpMcWrapper");
+		
 		this.host = host;
 		this.port = port;
 		
@@ -32,10 +36,10 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		this.wrapper = new ServerSocket(wrapperPort, 50, InetAddress.getByName(wrapperHost));
 		
 		/* Start the minecraft server. */
-		SpMcMinecraftStarter server = new SpMcMinecraftStarter(1024);
+		this.starter = new SpMcMinecraftStarter(1024);
 		
-		server.addHandler(this);
-		server.start();
+		this.starter.addHandler(this);
+		this.starter.start();
 	}
     
 	public Map<String, SpMcPlayer> getPlayers(){

@@ -2,9 +2,11 @@ package de.felixbruns.minecraft.handlers;
 
 import java.util.Map.Entry;
 
+import de.felixbruns.minecraft.SpMcMinecraftStarter;
 import de.felixbruns.minecraft.SpMcPlayer;
 import de.felixbruns.minecraft.protocol.ChatColors;
 import de.felixbruns.minecraft.protocol.packets.Packet;
+import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
 
 public class SpMcPlayersHandler extends SpMcCommandHandler implements ChatColors {
     /**
@@ -36,6 +38,28 @@ public class SpMcPlayersHandler extends SpMcCommandHandler implements ChatColors
     		for(int i = 0; i < 20; i++){
     			player.sendMessage("");
     		}
+    		
+    		return null;
+    	}
+    	else if(command.equals("quit")){
+    		player.getWrapper().starter.terminate();
+    		
+    		System.exit(0);
+    		
+    		return null;
+    	}
+    	else if(command.equals("restart")){
+    		for(Entry<String, SpMcPlayer> entry : player.getWrapper().getPlayers().entrySet()){
+    			SpMcPlayer p = entry.getValue();
+    			
+    			p.sendToClient(new PacketDisconnect("Server is restarting..."));
+    			p.disconnect();
+    		}
+    		
+    		player.getWrapper().starter.terminate();
+    		player.getWrapper().starter = new SpMcMinecraftStarter(1024);
+    		player.getWrapper().starter.addHandler(player.getWrapper());
+    		player.getWrapper().starter.start();
     		
     		return null;
     	}

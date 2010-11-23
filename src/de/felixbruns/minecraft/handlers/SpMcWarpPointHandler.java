@@ -91,7 +91,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     				name, position.distance(player.getPosition())
     			));
     		}
-
+    		
 			player.sendMessage("");
 			player.sendMessage(COLOR_LIGHT_YELLOW + "Personal warp points:");
 			

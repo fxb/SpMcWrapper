@@ -7,4 +7,12 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 public class PacketDisconnect extends Packet {
 	@ProtocolField(name = "Reason")
 	public String reason;
+	
+	public PacketDisconnect(){
+		this("");
+	}
+	
+	public PacketDisconnect(String reason){
+		this.reason = reason;
+	}
 }

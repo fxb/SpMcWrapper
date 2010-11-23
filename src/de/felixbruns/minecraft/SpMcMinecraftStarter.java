@@ -17,6 +17,8 @@ public class SpMcMinecraftStarter extends Thread {
 	private int                      memory;
 	
 	public SpMcMinecraftStarter(int memory){
+		super("SpMcMinecraftStarter");
+		
 		this.handlers = new ArrayList<SpMcConsoleHandler>();
 		this.running  = true;
 		this.memory   = memory;
@@ -40,6 +42,13 @@ public class SpMcMinecraftStarter extends Thread {
 	    this.command("stop");
 	    
 		this.running = false;
+		
+	    try {
+	        this.join();
+        }
+        catch(InterruptedException e){
+	        /* Ignore. */
+        }
 	}
 	
     public void run(){
