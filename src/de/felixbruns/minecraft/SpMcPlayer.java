@@ -13,6 +13,7 @@ import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
 import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
+import de.felixbruns.minecraft.protocol.packets.PacketEntityDie;
 import de.felixbruns.minecraft.protocol.packets.PacketLogin;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPosition;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
@@ -284,7 +285,7 @@ public class SpMcPlayer {
 			while(true){
 				try {
 		    		packet = this.input.read();
-		    				    		
+		    		
 	    			if(this.direction == DIRECTION_CLIENT_SERVER){
 	    				packet = SpMcPlayer.this.handleClientPacket(packet);
 	    			}

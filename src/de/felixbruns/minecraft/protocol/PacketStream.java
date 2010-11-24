@@ -36,9 +36,9 @@ public class PacketStream {
 	
 	public Packet read() throws IOException {
 		synchronized(this.input){
-			int                     id      = this.input.readByte() & 0xFF;
-			Class<? extends Packet> clazz   = Packets.getPacketClassById(id);
-			Packet                  packet  = null;
+			int                     id     = this.input.readByte() & 0xFF;
+			Class<? extends Packet> clazz  = Packets.getPacketClassById(id);
+			Packet                  packet = null;
 			
 			if(clazz == null){
 				throw new RuntimeException("Packet class for id '" + id + "' not found!");
@@ -122,8 +122,8 @@ public class PacketStream {
 	
 	public void write(Packet packet) throws IOException {
 		synchronized(this.output){
-			Class<?>              clazz          = packet.getClass();
-			ProtocolPacket        protocolPacket = (ProtocolPacket)clazz.getAnnotation(ProtocolPacket.class);
+			Class<?>       clazz          = packet.getClass();
+			ProtocolPacket protocolPacket = (ProtocolPacket)clazz.getAnnotation(ProtocolPacket.class);
 			
 			if(protocolPacket == null){
 				throw new RuntimeException("@ProtocolPacket annotation not found!");
