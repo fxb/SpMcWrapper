@@ -5,3 +5,8 @@ A Java Minecraft wrapper which sits in between the official Minecraft client and
 USAGE
 ------
 Put it into the same directory as 'minecraft-server.jar' and edit 'settings.json' to suit your needs.
+
+DEPENDENCIES
+------------
+Google Gson - http://code.google.com/p/google-gson/ - 'gson-1.5.jar'
+

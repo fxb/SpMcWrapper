@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.handlers;
 import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcPlayer;
-import de.felixbruns.minecraft.SpMcSettings;
+import de.felixbruns.minecraft.SpMcStorage;
 import de.felixbruns.minecraft.protocol.ChatColors;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
@@ -27,7 +27,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().put(args[0], player.getPosition());
     		
-    		SpMcSettings.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getUsername(), player.getWarpPoints());
     		
     		return null;
     	}
@@ -40,7 +40,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWrapper().getWarpPoints().put(args[0], player.getPosition());
     		
-    		SpMcSettings.saveWarpPoints(player.getWrapper().getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getWrapper().getWarpPoints());
     		
     		return null;
     	}
@@ -53,7 +53,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().remove(args[0]);
     		
-    		SpMcSettings.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getUsername(), player.getWarpPoints());
     		
     		return null;
     	}
@@ -66,7 +66,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWrapper().getWarpPoints().remove(args[0]);
     		
-    		SpMcSettings.saveWarpPoints(player.getWrapper().getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getWrapper().getWarpPoints());
     		
     		return null;
     	}

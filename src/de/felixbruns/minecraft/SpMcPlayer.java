@@ -199,7 +199,7 @@ public class SpMcPlayer {
 			
 			this.wrapper.getPlayers().put(this.username, this);
 			
-			this.warpPoints = SpMcSettings.loadWarpPoints(this.username);
+			this.warpPoints = SpMcStorage.loadWarpPoints(this.username);
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){

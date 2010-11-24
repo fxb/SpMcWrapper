@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
 import de.felixbruns.minecraft.handlers.SpMcDaylightHandler;
 import de.felixbruns.minecraft.handlers.SpMcPlayersHandler;
 import de.felixbruns.minecraft.handlers.SpMcWarpPointHandler;
@@ -30,7 +31,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		
 		/* Initialize client and warp point maps. */
 		this.players    = new HashMap<String, SpMcPlayer>();
-		this.warpPoints = SpMcSettings.loadWarpPoints();
+		this.warpPoints = SpMcStorage.loadWarpPoints();
 		
 		/* Create and bind wrapper server. */
 		this.wrapper = new ServerSocket(wrapperPort, 50, InetAddress.getByName(wrapperHost));
@@ -81,12 +82,12 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		SpMcSettings settings = SpMcSettings.getInstance();
+		SpMcSettings settings = SpMcStorage.loadSettings();
 		SpMcWrapper  wrapper  = new SpMcWrapper(
-			settings.getString("minecraft-host", "localhost"),
-			settings.getInt("minecraft-port", 25565),
-			settings.getString("wrapper-host", "localhost"),
-			settings.getInt("wrapper-port", 25566)
+			settings.getMinecraftHost(),
+			settings.getMinecraftPort(),
+			settings.getWrapperHost(),
+			settings.getWrapperPort()
 		);
 		
 		wrapper.start();
