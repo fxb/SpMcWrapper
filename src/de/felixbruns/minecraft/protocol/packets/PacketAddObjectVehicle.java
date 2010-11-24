@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x17, type = "Server", name = "AddObjectVehicle")
+@ProtocolPacket(id = 0x17, direction = Direction.SERVER_CLIENT, name = "AddObjectVehicle")
 public class PacketAddObjectVehicle extends Packet {
 	public static final byte TYPE_BOAT             = 1;
 	public static final byte TYPE_MINECART         = 10;

@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x15, type = "Client", name = "PickupSpawn")
+@ProtocolPacket(id = 0x15, direction = Direction.CLIENT_SERVER, name = "PickupSpawn")
 public class PacketPickupSpawn extends Packet {	
 	@ProtocolField(name = "Entity ID")
 	public int eid;

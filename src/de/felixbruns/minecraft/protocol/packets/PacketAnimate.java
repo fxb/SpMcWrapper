@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x12, type = "Client", name = "Animate")
+@ProtocolPacket(id = 0x12, direction = Direction.CLIENT_SERVER, name = "Animate")
 public class PacketAnimate extends Packet {	
 	@ProtocolField(name = "Player ID")
 	public int eid;

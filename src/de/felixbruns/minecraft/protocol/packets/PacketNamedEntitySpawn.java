@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x14, type = "Server", name = "NamedEntitySpawn")
+@ProtocolPacket(id = 0x14, direction = Direction.SERVER_CLIENT, name = "NamedEntitySpawn")
 public class PacketNamedEntitySpawn extends Packet {	
 	@ProtocolField(name = "Entity ID")
 	public int eid;

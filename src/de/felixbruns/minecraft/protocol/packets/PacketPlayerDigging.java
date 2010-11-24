@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x0E, type = "Client", name = "PlayerDigging")
+@ProtocolPacket(id = 0x0E, direction = Direction.CLIENT_SERVER, name = "PlayerDigging")
 public class PacketPlayerDigging extends Packet {
 	public static final byte STATUS_STARTED_DIGGING = 0;
 	public static final byte STATUS_DIGGING         = 1;

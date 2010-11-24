@@ -11,8 +11,9 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x05, type = "Client & Server", name = "PlayerInventory")
+@ProtocolPacket(id = 0x05, direction = Direction.BIDIRECTIONAL, name = "PlayerInventory")
 public class PacketPlayerInventory extends Packet {
 	public static final int TYPE_MAIN_INVENTORY = -1;
 	public static final int TYPE_EQUIPPED_ARMOR = -2;

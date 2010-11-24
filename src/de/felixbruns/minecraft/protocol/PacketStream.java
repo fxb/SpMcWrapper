@@ -37,9 +37,9 @@ public class PacketStream {
 	public Packet read() throws IOException {
 		synchronized(this.input){
 			int                     id     = this.input.readByte() & 0xFF;
-			Class<? extends Packet> clazz  = Packets.getPacketClassById(id);
+			Class<? extends Packet> clazz  = PacketFinder.getPacketClassById(id);
 			Packet                  packet = null;
-			
+						
 			if(clazz == null){
 				throw new RuntimeException("Packet class for id '" + id + "' not found!");
 			}

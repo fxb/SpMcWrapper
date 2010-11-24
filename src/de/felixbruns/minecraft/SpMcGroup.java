@@ -2,9 +2,8 @@ package de.felixbruns.minecraft;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
-import de.felixbruns.minecraft.protocol.Packets;
+import de.felixbruns.minecraft.protocol.PacketFinder;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
@@ -22,10 +21,10 @@ public class SpMcGroup {
 		this.commands = new ArrayList<String>();
 		this.players  = new ArrayList<String>();
 		
-		for(Entry<Integer, Class<? extends Packet>> packet : Packets.PACKETS.entrySet()){
-			ProtocolPacket protocolPacket = packet.getValue().getAnnotation(ProtocolPacket.class);
+		for(Class<? extends Packet> clazz : PacketFinder.getPacketClasses()){
+			ProtocolPacket protocolPacket = clazz.getAnnotation(ProtocolPacket.class);
 			
-			if(protocolPacket.type().contains("Client")){
+			if(protocolPacket.direction().isClientPacket()){
 				this.packets.add(protocolPacket.name());
 			}
 		}

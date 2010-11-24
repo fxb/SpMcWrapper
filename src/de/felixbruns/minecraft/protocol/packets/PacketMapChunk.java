@@ -8,8 +8,9 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x33, type = "Server", name = "MapChunk")
+@ProtocolPacket(id = 0x33, direction = Direction.SERVER_CLIENT, name = "MapChunk")
 public class PacketMapChunk extends Packet {
 	@ProtocolField(name = "Block X")
 	public int x;

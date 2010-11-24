@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x35, type = "Server", name = "BlockChange")
+@ProtocolPacket(id = 0x35, direction = Direction.SERVER_CLIENT, name = "BlockChange")
 public class PacketBlockChange extends Packet {
 	@ProtocolField(name = "Chunk X")
 	public int x;

@@ -8,8 +8,9 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x3B, type = "Server", name = "ComplexEntities")
+@ProtocolPacket(id = 0x3B, direction = Direction.SERVER_CLIENT, name = "ComplexEntities")
 public class PacketComplexEntities extends Packet {
 	@ProtocolField(name = "Entity X")
 	public int x;

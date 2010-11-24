@@ -2,8 +2,9 @@ package de.felixbruns.minecraft.protocol.packets;
 
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
+import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
 
-@ProtocolPacket(id = 0x0F, type = "Client", name = "PlayerBlockPlacement")
+@ProtocolPacket(id = 0x0F, direction = Direction.CLIENT_SERVER, name = "PlayerBlockPlacement")
 public class PacketPlayerBlockPlacement extends Packet {
 	public static final byte DIRECTION_MINUS_Y = 0;
 	public static final byte DIRECTION_PLUS_Y  = 1;
