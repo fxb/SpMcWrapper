@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x21, type = "Server", name = "Entity Relative Move & Look")
+@ProtocolPacket(id = 0x21, type = "Server", name = "EntityRelativeMoveAndLook")
 public class PacketEntityRelativeMoveAndLook extends Packet {
 	@ProtocolField(name = "Entity Id")
 	public int eid;

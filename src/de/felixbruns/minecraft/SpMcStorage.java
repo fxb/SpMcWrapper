@@ -15,15 +15,19 @@ import com.google.gson.JsonParseException;
 import com.google.gson.reflect.TypeToken;
 
 import de.felixbruns.minecraft.protocol.Position;
+import de.felixbruns.minecraft.util.GsonPrettyPrint;
 
 public class SpMcStorage {	
 	private static final String STORAGE_SETTINGS    = "settings.json";
+	private static final String STORAGE_GROUPS      = "groups.json";
 	private static final String STORAGE_WARP_POINTS = "warp-points";
 	
-	private static final Gson gson;
+	private static final Gson            gson;
+	private static final GsonPrettyPrint gsonPrettyPrint;
 	
 	static {
-		gson = new GsonBuilder().excludeFieldsWithModifiers(Modifier.STATIC).create();
+		gson            = new GsonBuilder().excludeFieldsWithModifiers(Modifier.STATIC).setPrettyPrinting().create();
+		gsonPrettyPrint = new GsonPrettyPrint(gson);
 	}
 	
 	public static SpMcSettings loadSettings(){
@@ -39,6 +43,8 @@ public class SpMcStorage {
 			/* Ignore. */
 		}
 		
+		saveSettings(settings);
+		
 		return settings;
 	}
 	
@@ -46,10 +52,46 @@ public class SpMcStorage {
 		try {
 			FileWriter writer = new FileWriter(STORAGE_SETTINGS);
 			
-			gson.toJson(settings, writer);
+			gsonPrettyPrint.toJson(settings, writer);
 			
 			writer.close();
         }
+		catch(IOException e){
+			/* Ignore. */
+		}
+	}
+	
+	public static Map<String, SpMcGroup> loadGroups(){
+		Type                   type   = new TypeToken<Map<String, SpMcGroup>>(){}.getType();
+		Map<String, SpMcGroup> groups = new HashMap<String, SpMcGroup>();
+		
+		try {
+			groups = gson.fromJson(new FileReader(STORAGE_GROUPS), type);
+		}
+		catch(IOException e){
+			/* Ignore. */
+		}
+		catch(JsonParseException e){
+			/* Ignore. */
+		}
+		
+		if(!groups.containsKey("default")){
+			groups.put("default", SpMcGroup.DEFAULT);
+		}
+		
+		saveGroups(groups);
+		
+		return groups;
+	}
+	
+	public static void saveGroups(Map<String, SpMcGroup> groups){
+		try {
+			FileWriter writer = new FileWriter(STORAGE_GROUPS);
+			
+			gsonPrettyPrint.toJson(groups, writer);
+			
+			writer.close();
+		}
 		catch(IOException e){
 			/* Ignore. */
 		}
@@ -75,6 +117,8 @@ public class SpMcStorage {
 			/* Ignore. */
 		}
 		
+		saveWarpPoints(username, warpPoints);
+		
 		return warpPoints;
 	}
 	
@@ -88,7 +132,7 @@ public class SpMcStorage {
 			
 			FileWriter writer = new FileWriter(STORAGE_WARP_POINTS + "/" + username + ".json");
 			
-			gson.toJson(warpPoints, writer);
+			gsonPrettyPrint.toJson(warpPoints, writer);
 			
 			writer.close();
 		}

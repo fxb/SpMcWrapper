@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x35, type = "Server", name = "Block Change")
+@ProtocolPacket(id = 0x35, type = "Server", name = "BlockChange")
 public class PacketBlockChange extends Packet {
 	@ProtocolField(name = "Chunk X")
 	public int x;

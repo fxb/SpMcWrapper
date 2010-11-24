@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x1C, type = "Server", name = "Entity Velocity")
+@ProtocolPacket(id = 0x1C, type = "Server", name = "EntityVelocity")
 public class PacketEntityVelocity extends Packet {
 	@ProtocolField(name = "Entity Id")
 	public int eid;

@@ -20,11 +20,10 @@ public class SpMcGenericCommandHandler extends SpMcCommandHandler implements Cha
     		player.sendMessage(COLOR_LIGHT_YELLOW + "Online players:");
     		
     		for(Entry<String, SpMcPlayer> entry : player.getWrapper().getPlayers().entrySet()){
-    			String     name = entry.getKey();
-    			SpMcPlayer p    = entry.getValue();
+    			SpMcPlayer p = entry.getValue();
     			
-    			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
-        			" %s (%.2fm)", name, p.getPosition().distance(player.getPosition())
+    			player.sendMessage(String.format(
+        			" %s%s (%.2fm)", p.getDisplayName(), COLOR_LIGHT_YELLOW, p.getPosition().distance(player.getPosition())
         		));
     		}
     		

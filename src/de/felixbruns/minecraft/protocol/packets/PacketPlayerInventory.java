@@ -12,7 +12,7 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
 
-@ProtocolPacket(id = 0x05, type = "Client & Server", name = "Player Inventory")
+@ProtocolPacket(id = 0x05, type = "Client & Server", name = "PlayerInventory")
 public class PacketPlayerInventory extends Packet {
 	public static final int TYPE_MAIN_INVENTORY = -1;
 	public static final int TYPE_EQUIPPED_ARMOR = -2;

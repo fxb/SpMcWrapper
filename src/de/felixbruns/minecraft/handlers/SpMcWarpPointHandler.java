@@ -27,7 +27,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().put(args[0], player.getPosition());
     		
-    		SpMcStorage.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getName(), player.getWarpPoints());
     		
     		return null;
     	}
@@ -53,7 +53,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		player.getWarpPoints().remove(args[0]);
     		
-    		SpMcStorage.saveWarpPoints(player.getUsername(), player.getWarpPoints());
+    		SpMcStorage.saveWarpPoints(player.getName(), player.getWarpPoints());
     		
     		return null;
     	}

@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x06, type = "Server", name = "Spawn Position")
+@ProtocolPacket(id = 0x06, type = "Server", name = "SpawnPosition")
 public class PacketSpawnPosition extends Packet {
 	@ProtocolField(name = "X")
 	public int x;

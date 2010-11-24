@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x0E, type = "Client", name = "Player Digging")
+@ProtocolPacket(id = 0x0E, type = "Client", name = "PlayerDigging")
 public class PacketPlayerDigging extends Packet {
 	public static final byte STATUS_STARTED_DIGGING = 0;
 	public static final byte STATUS_DIGGING         = 1;

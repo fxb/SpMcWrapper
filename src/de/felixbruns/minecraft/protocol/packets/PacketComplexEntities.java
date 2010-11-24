@@ -9,7 +9,7 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
 
-@ProtocolPacket(id = 0x3B, type = "Server", name = "Block Change")
+@ProtocolPacket(id = 0x3B, type = "Server", name = "ComplexEntities")
 public class PacketComplexEntities extends Packet {
 	@ProtocolField(name = "Entity X")
 	public int x;

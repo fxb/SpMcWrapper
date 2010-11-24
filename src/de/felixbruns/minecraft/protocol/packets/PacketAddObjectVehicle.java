@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x17, type = "Server", name = "Add Object/Vehicle")
+@ProtocolPacket(id = 0x17, type = "Server", name = "AddObjectVehicle")
 public class PacketAddObjectVehicle extends Packet {
 	public static final byte TYPE_BOAT             = 1;
 	public static final byte TYPE_MINECART         = 10;

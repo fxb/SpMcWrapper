@@ -3,7 +3,7 @@ package de.felixbruns.minecraft.protocol.packets;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 
-@ProtocolPacket(id = 0x18, type = "Server", name = "Mob Spawn")
+@ProtocolPacket(id = 0x18, type = "Server", name = "MobSpawn")
 public class PacketMobSpawn extends Packet {
 	@ProtocolField(name = "Entity Id")
 	public int eid;

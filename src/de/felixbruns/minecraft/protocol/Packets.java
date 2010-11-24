@@ -46,7 +46,7 @@ import de.felixbruns.minecraft.protocol.packets.PacketUseEntity;
 
 
 public class Packets {
-	private static final Map<Integer, Class<? extends Packet>> PACKETS = new HashMap<Integer, Class<? extends Packet>>(){
+	public static final Map<Integer, Class<? extends Packet>> PACKETS = new HashMap<Integer, Class<? extends Packet>>(){
         private static final long serialVersionUID = 1L;
         
         {

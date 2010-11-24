@@ -6,6 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
 import de.felixbruns.minecraft.handlers.SpMcAdminCommandHandler;
@@ -20,6 +21,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	private ServerSocket         server;
 	
 	private Map<String, SpMcPlayer> players;
+	private Map<String, SpMcGroup>  groups;
 	private Map<String, Position>   warpPoints;
 	
 	public SpMcWrapper() throws IOException {
@@ -30,6 +32,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		
 		/* Initialize client and warp point maps. */
 		this.players    = new HashMap<String, SpMcPlayer>();
+		this.groups     = SpMcStorage.loadGroups();
 		this.warpPoints = SpMcStorage.loadWarpPoints();
 		
 		/* Create and bind wrapper server. */
@@ -60,6 +63,26 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	
 	public Map<String, SpMcPlayer> getPlayers(){
 		return this.players;
+	}
+	
+	public Map<String, SpMcGroup> getGroups(){
+		return this.groups;
+	}
+	
+	public SpMcGroup getGroupForPlayer(String name){
+		for(Entry<String, SpMcGroup> entry : this.groups.entrySet()){
+			if(entry.getValue().containsPlayer(name)){
+				return entry.getValue();
+			}
+		}
+		
+		SpMcGroup group = this.groups.get("default");
+		
+		group.addPlayer(name);
+		
+		SpMcStorage.saveGroups(this.groups);
+		
+		return group;
 	}
 	
 	public Map<String, Position> getWarpPoints(){

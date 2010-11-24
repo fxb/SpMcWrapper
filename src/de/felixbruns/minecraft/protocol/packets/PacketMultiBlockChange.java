@@ -13,7 +13,7 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolReadHelper;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolWriteHelper;
 
-@ProtocolPacket(id = 0x34, type = "Server", name = "Multi Block Change")
+@ProtocolPacket(id = 0x34, type = "Server", name = "MultiBlockChange")
 public class PacketMultiBlockChange extends Packet {
 	@ProtocolField(name = "Chunk X")
 	public int x;

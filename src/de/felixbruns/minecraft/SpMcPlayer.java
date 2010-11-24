@@ -11,10 +11,12 @@ import de.felixbruns.minecraft.handlers.SpMcHandler;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
+import de.felixbruns.minecraft.protocol.packets.PacketBlockChange;
 import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
 import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
-import de.felixbruns.minecraft.protocol.packets.PacketEntityDie;
 import de.felixbruns.minecraft.protocol.packets.PacketLogin;
+import de.felixbruns.minecraft.protocol.packets.PacketPlayerBlockPlacement;
+import de.felixbruns.minecraft.protocol.packets.PacketPlayerDigging;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPosition;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
@@ -24,10 +26,11 @@ public class SpMcPlayer {
 	private PacketStream      clientStream;
 	private List<SpMcHandler> handlers;
 	
-	private String                username;
+	private String                name;
 	private int                   eid;
 	private Position              position;
 	private Map<String, Position> warpPoints;
+	private SpMcGroup             group;
 	
 	/**
 	 * Create a new player.
@@ -44,10 +47,11 @@ public class SpMcPlayer {
 		this.clientStream  = new PacketStream(clientSocket);
 		this.handlers      = new ArrayList<SpMcHandler>();
 		
-		this.username   = null;
+		this.name       = null;
 		this.eid        = -1;
 		this.position   = new Position();
 		this.warpPoints = new HashMap<String, Position>();
+		this.group      = null;
 	}
 	
 	/**
@@ -61,12 +65,25 @@ public class SpMcPlayer {
 	}
 	
 	/**
-	 * Get the associated username.
+	 * Get the associated name.
 	 * 
-	 * @return The players username.
+	 * @return The players name.
 	 */
-	public String getUsername(){
-		return this.username;
+	public String getName(){
+		return this.name;
+	}
+	
+	/**
+	 * Get the display name including the group prefix and possible colors.
+	 * 
+	 * @return The players display name.
+	 */
+	public String getDisplayName(){
+		if(this.group != null){
+			return this.group.getPrefix() + this.name;
+		}
+		
+		return this.name;
 	}
 	
 	/**
@@ -94,6 +111,10 @@ public class SpMcPlayer {
 	 */
 	public Map<String, Position> getWarpPoints(){
 		return this.warpPoints;
+	}
+	
+	public SpMcGroup getGroup(){
+		return this.group;
 	}
 	
 	/**
@@ -156,11 +177,11 @@ public class SpMcPlayer {
 		if(packet instanceof PacketLogin){
 			PacketLogin login = (PacketLogin)packet;
 			
-			this.username = login.username;
+			this.name = login.username;
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
-			this.wrapper.getPlayers().remove(this.username);
+			this.wrapper.getPlayers().remove(this.name);
 		}
 		/* Keep track of the players position. */
 		else if(packet instanceof PacketPlayerPosition){
@@ -168,6 +189,61 @@ public class SpMcPlayer {
 		}
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
+		}
+		else if(packet instanceof PacketPlayerDigging && this.group != null && !this.group.isPacketAllowed(packet)){
+			PacketPlayerDigging digging = ((PacketPlayerDigging)packet);
+			
+			if(digging.status == 3){				
+				PacketBlockChange change = new PacketBlockChange();
+				
+				change.x        = digging.x;
+				change.y        = digging.y;
+				change.z        = digging.z;
+				change.type     = 49;
+				change.metadata = 0;
+				
+				this.sendToClient(change);
+			}
+			
+			return null;
+		}
+		else if(packet instanceof PacketPlayerBlockPlacement && this.group != null && !this.group.isPacketAllowed(packet)){
+			PacketPlayerBlockPlacement placement = ((PacketPlayerBlockPlacement)packet);
+			PacketBlockChange          change    = new PacketBlockChange();
+			
+			change.x        = placement.x;
+			change.y        = placement.y;
+			change.z        = placement.z;
+			change.type     = 0;
+			change.metadata = 0;
+			
+			if(placement.direction == 0){
+				change.y--;
+			}
+			else if(placement.direction == 1){
+				change.y++;
+			}
+			else if(placement.direction == 2){
+				change.z--;
+			}
+			else if(placement.direction == 3){
+				change.z++;
+			}
+			else if(placement.direction == 4){
+				change.x--;
+			}
+			else if(placement.direction == 5){
+				change.x++;
+			}
+			
+			this.sendToClient(change);
+			
+			return null;
+		}
+		
+		/* Check if packet is allowed for user. */
+		if(this.group != null && !this.group.isPacketAllowed(packet)){
+			return null;
 		}
 		
 		/* Notify any external handlers. */
@@ -198,17 +274,42 @@ public class SpMcPlayer {
 			
 			this.eid = login.versionOrEid;
 			
-			this.wrapper.getPlayers().put(this.username, this);
+			this.wrapper.getPlayers().put(this.name, this);
 			
-			this.warpPoints = SpMcStorage.loadWarpPoints(this.username);
+			this.group = this.wrapper.getGroupForPlayer(this.name);
+			
+			System.out.println(this.group.getPrefix());
+			
+			this.warpPoints = SpMcStorage.loadWarpPoints(this.name);
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
-			this.wrapper.getPlayers().remove(this.username);
+			this.wrapper.getPlayers().remove(this.name);
 		}
 		/* Keep track of the players position. */
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
+		}
+		else if(packet instanceof PacketChatMessage){
+			PacketChatMessage chat = (PacketChatMessage)packet;
+			
+			if(chat.message.matches("<(.+)> (.+)")){
+				String     name    = chat.message.replaceAll("<(.+)> (.+)", "$1");
+				String     message = chat.message.replaceAll("<(.+)> (.+)", "$2");
+				SpMcPlayer player  = this.wrapper.getPlayers().get(name);
+				
+				chat.message = String.format(
+					"%s:§f %s", player.getDisplayName(), message
+				);
+			}
+			if(chat.message.matches("§e(.+) joined the game.")){
+				String     name  = chat.message.replaceAll("§e(.+) joined the game.", "$1");
+				SpMcPlayer player  = this.wrapper.getPlayers().get(name);
+				
+				chat.message = String.format(
+					"%s§e joined the game.", player.getDisplayName()
+				);
+			}
 		}
 		
 		/* Notify any external handlers. */
@@ -298,9 +399,9 @@ public class SpMcPlayer {
 	    			}
 		        }
 		        catch(IOException e){
-					SpMcPlayer.this.wrapper.getPlayers().remove(SpMcPlayer.this.username);
+					SpMcPlayer.this.wrapper.getPlayers().remove(SpMcPlayer.this.name);
 					
-		        	System.err.println("Lost connection to " + SpMcPlayer.this.username + "!");
+		        	System.err.println("Lost connection to " + SpMcPlayer.this.name + "!");
 		        	
 		        	return;
 		        }
