@@ -1,0 +1,34 @@
+{
+    "admin" : {
+        "prefix" : "§a[Admin]",
+        "packets" : [
+            "*"
+        ],
+        "commands" : [
+            "*"
+        ],
+        "players" : [
+            "fxb"
+        ]
+    },
+    "default" : {
+        "prefix" : "§9[Observer]",
+        "packets" : [
+            "KeepAlive",
+            "Login",
+            "Handshake",
+            "ChatMessage",
+            "PlayerRespawn",
+            "Player",
+            "PlayerPosition",
+            "PlayerLook",
+            "PlayerPositionAndLook",
+            "Animate",
+            "Disconnect"
+        ],
+        "commands" : [
+            "*"
+        ],
+        "players" : []
+    }
+}
