@@ -195,8 +195,9 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
 		player.sendToServer(packet);
 		
 		/* Now move down to the target level. */
-		packet.y      = target.y;
-		packet.stance = target.y + 1.62;
+		packet.y        = target.y;
+		packet.stance   = target.y + 1.62;
+		packet.onGround = true;
 		
 		player.sendToServer(packet);
 		
