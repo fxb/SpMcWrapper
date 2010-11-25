@@ -27,7 +27,17 @@
             "Disconnect"
         ],
         "commands" : [
-            "*"
+            "home",
+            "help",
+            "players",
+            "clear",
+            "setwarp",
+            "setglobalwarp",
+            "deletewarp",
+            "deleteglobalwarp",
+            "listwarps",
+            "warp",
+            "warpto"
         ],
         "players" : []
     }

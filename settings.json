@@ -3,5 +3,6 @@
     "minecraftPort" : 25565,
     "wrapperHost" : "localhost",
     "wrapperPort" : 25566,
-    "motd" : "Welcome! You're connected through SpMcWrapper."
+    "motd" : "Welcome! You're connected through SpMcWrapper.",
+    "commandChar" : "/"
 }
