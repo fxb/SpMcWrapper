@@ -147,6 +147,7 @@ public class SpMcStorage {
     	private String wrapperHost;
     	private int    wrapperPort;
     	private String motd;
+    	private String commandChar;
     	
 		public SpMcSettings(){
 	        this.minecraftHost = "localhost";
@@ -154,6 +155,7 @@ public class SpMcStorage {
 	        this.wrapperHost   = "localhost";
 	        this.wrapperPort   = 25566;
 	        this.motd          = "Welcome! You're connected through SpMcWrapper.";
+	        this.commandChar   = "/";
         }
 		
 		public String getMinecraftHost(){
@@ -194,6 +196,14 @@ public class SpMcStorage {
 		
 		public void setMotd(String motd){
         	this.motd = motd;
+        }
+		
+		public String getCommandChar(){
+        	return this.commandChar;
+        }
+		
+		public void setCommandChar(String commandChar){
+        	this.commandChar = commandChar;
         }
 	}
 }

@@ -1,16 +1,14 @@
-package de.felixbruns.minecraft.handlers.commands;
+package de.felixbruns.minecraft.handlers;
 
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import de.felixbruns.minecraft.SpMcPlayer;
-import de.felixbruns.minecraft.handlers.SpMcPacketAdapter;
-import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
+import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
 
-@CommandHandler()
-public abstract class SpMcBaseCommandHandler extends SpMcPacketAdapter {
+public abstract class CommandHandler extends PacketAdapter implements Colors {
 	/**
 	 * Handle a client packet, check if it is a chat message and if it starts
 	 * with an exclamation mark. If it does, parse and handle it as a command.
@@ -20,17 +18,31 @@ public abstract class SpMcBaseCommandHandler extends SpMcPacketAdapter {
 	 * @param packet The packet that was sent.
 	 */
     public Packet handleClientPacket(SpMcPlayer player, Packet packet){
+    	String commandChar = player.getWrapper().getSettings().getCommandChar();
+    	
     	if(packet instanceof PacketChatMessage){
     		PacketChatMessage chat = (PacketChatMessage)packet;
     		
-    		if(chat.message.startsWith("!")){
-    			String[] parts = this.parseCommand(chat.message);
+    		if(chat.message.startsWith(commandChar)){
+    			String[] parts = this.parseCommand(commandChar, chat.message);
     			
     			if(parts.length > 0){
         			String   command = parts[0];
         			String[] args    = Arrays.copyOfRange(parts, 1, parts.length);
         			
-        			return this.handleCommand(player, packet, command, args);
+        			if(!CommandFinder.isCommandAvailable(command)){
+        				player.sendMessage(COLOR_LIGHT_YELLOW + "That command is not available!");
+        				
+        				return null;
+        			}
+        			else if(!player.getGroup().isCommandAllowed(command)){
+        				player.sendMessage(COLOR_LIGHT_RED + "You're not allowed to do that!");
+        				
+        				return null;
+        			}
+        			else{
+        				return this.handleCommand(player, packet, command, args);
+        			}
     			}
     		}
     	}
@@ -54,8 +66,8 @@ public abstract class SpMcBaseCommandHandler extends SpMcPacketAdapter {
      * 
      * @return An array of strings.
      */
-    private String[] parseCommand(String message){
-    	StringTokenizer tokenizer = new StringTokenizer(message, "! ");
+    private String[] parseCommand(String commandChar, String message){
+    	StringTokenizer tokenizer = new StringTokenizer(message, commandChar + " ");
 		String          parts[]   = new String[tokenizer.countTokens()];
 		int             i         = 0;
 		

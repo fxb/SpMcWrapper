@@ -3,12 +3,14 @@ package de.felixbruns.minecraft.handlers.commands;
 import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcPlayer;
-import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
-import de.felixbruns.minecraft.protocol.ChatColors;
+import de.felixbruns.minecraft.handlers.CommandFinder;
+import de.felixbruns.minecraft.handlers.CommandHandler;
+import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
+import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 
-@CommandHandler(commands = {"players", "clear"})
-public class SpMcPlayerCommandHandler extends SpMcBaseCommandHandler implements ChatColors {
+@CommandProvider(commands = {"help", "players", "clear"})
+public class PlayerCommandHandler extends CommandHandler implements Colors {
     /**
      * Handle serveral generic commands.
      * 
@@ -17,7 +19,25 @@ public class SpMcPlayerCommandHandler extends SpMcBaseCommandHandler implements 
      * @param args     The arguments to the command.
      */
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
-    	if(command.equals("players")){
+    	if(command.equals("help")){
+			player.sendMessage("");
+    		player.sendMessage(COLOR_LIGHT_YELLOW + "Available commands:");
+    		
+    		StringBuilder msg = new StringBuilder(" ");
+    		
+    		for(String cmd : CommandFinder.getCommands()){
+    			if(player.getGroup().isCommandAllowed(cmd)){
+    				msg.append(cmd);
+    				msg.append(", ");
+    			}
+    		}
+    		
+    		player.sendMessage(msg.toString());
+			player.sendMessage("");
+    		
+    		return null;
+    	}
+    	else if(command.equals("players")){
 			player.sendMessage("");
     		player.sendMessage(COLOR_LIGHT_YELLOW + "Online players:");
     		

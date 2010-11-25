@@ -1,6 +1,6 @@
 package de.felixbruns.minecraft.protocol;
 
-public interface ChatColors {
+public interface Colors {
 	public static final String COLOR_BLACK          = "§0";
 	public static final String COLOR_BLUE           = "§1";
 	public static final String COLOR_GREEN          = "§2";

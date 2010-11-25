@@ -4,14 +4,15 @@ import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcPlayer;
 import de.felixbruns.minecraft.SpMcStorage;
-import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
-import de.felixbruns.minecraft.protocol.ChatColors;
+import de.felixbruns.minecraft.handlers.CommandHandler;
+import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
+import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
-@CommandHandler(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto"})
-public class SpMcWarpPointCommandHandler extends SpMcBaseCommandHandler implements ChatColors {
+@CommandProvider(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto"})
+public class WarpPointCommandHandler extends CommandHandler implements Colors {
     /**
      * Handle a warp command sent by a player.
      * 

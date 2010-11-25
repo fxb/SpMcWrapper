@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.felixbruns.minecraft.handlers.SpMcPacketHandler;
+import de.felixbruns.minecraft.handlers.PacketHandler;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
@@ -21,10 +21,10 @@ import de.felixbruns.minecraft.protocol.packets.PacketPlayerPosition;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
 public class SpMcPlayer {
-	private SpMcWrapper       wrapper;
-	private PacketStream      serverStream;
-	private PacketStream      clientStream;
-	private List<SpMcPacketHandler> handlers;
+	private SpMcWrapper         wrapper;
+	private PacketStream        serverStream;
+	private PacketStream        clientStream;
+	private List<PacketHandler> handlers;
 	
 	private String                name;
 	private int                   eid;
@@ -45,7 +45,7 @@ public class SpMcPlayer {
 		this.wrapper       = wrapper;
 		this.serverStream  = new PacketStream(serverSocket);
 		this.clientStream  = new PacketStream(clientSocket);
-		this.handlers      = new ArrayList<SpMcPacketHandler>();
+		this.handlers      = new ArrayList<PacketHandler>();
 		
 		this.name       = null;
 		this.eid        = -1;
@@ -122,7 +122,7 @@ public class SpMcPlayer {
 	 * 
 	 * @param handler The handler to add.
 	 */
-	public void addHandler(SpMcPacketHandler handler){
+	public void addHandler(PacketHandler handler){
 		synchronized(this.handlers){
 			this.handlers.add(handler);
         }
@@ -248,7 +248,7 @@ public class SpMcPlayer {
 		
 		/* Notify any external handlers. */
 		synchronized(this.handlers){
-    		for(SpMcPacketHandler handler : this.handlers){
+    		for(PacketHandler handler : this.handlers){
     			packet = handler.handleClientPacket(SpMcPlayer.this, packet);
     			
     			if(packet == null){
@@ -276,10 +276,7 @@ public class SpMcPlayer {
 			
 			this.wrapper.getPlayers().put(this.name, this);
 			
-			this.group = this.wrapper.getGroupForPlayer(this.name);
-			
-			System.out.println(this.group.getPrefix());
-			
+			this.group      = this.wrapper.getGroupForPlayer(this.name);
 			this.warpPoints = SpMcStorage.loadWarpPoints(this.name);
 		}
 		/* Remove client from wrapper on disconnect. */
@@ -314,7 +311,7 @@ public class SpMcPlayer {
 		
 		/* Notify any external handlers. */
 		synchronized(this.handlers){
-    		for(SpMcPacketHandler handler : this.handlers){
+    		for(PacketHandler handler : this.handlers){
     			packet = handler.handleServerPacket(SpMcPlayer.this, packet);
     			
     			if(packet == null){

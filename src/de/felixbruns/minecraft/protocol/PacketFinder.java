@@ -10,8 +10,8 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.util.ClassFinder;
 
 public class PacketFinder {
-	public static final List<Class<? extends Packet>>         packetList;
-	public static final Map<Integer, Class<? extends Packet>> packetMap;
+	private static final List<Class<? extends Packet>>         packetList;
+	private static final Map<Integer, Class<? extends Packet>> packetMap;
 	
 	static {
 		List<Class<?>> classes = ClassFinder.getClasses("de.felixbruns.minecraft.protocol.packets");

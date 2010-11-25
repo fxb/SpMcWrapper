@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 
-public @interface CommandHandler {
+public @interface CommandProvider {
 	public String[] commands() default {};
 }

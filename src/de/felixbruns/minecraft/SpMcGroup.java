@@ -3,6 +3,7 @@ package de.felixbruns.minecraft;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.felixbruns.minecraft.handlers.CommandFinder;
 import de.felixbruns.minecraft.protocol.PacketFinder;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
@@ -18,7 +19,7 @@ public class SpMcGroup {
 	private SpMcGroup(){
 		this.prefix   = "";
 		this.packets  = new ArrayList<String>();
-		this.commands = new ArrayList<String>();
+		this.commands = new ArrayList<String>(CommandFinder.getCommands());
 		this.players  = new ArrayList<String>();
 		
 		for(Class<? extends Packet> clazz : PacketFinder.getPacketClasses()){
@@ -28,8 +29,6 @@ public class SpMcGroup {
 				this.packets.add(protocolPacket.name());
 			}
 		}
-		
-		this.commands.add("*");
 	}
 	
 	public String getPrefix(){

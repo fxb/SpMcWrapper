@@ -3,13 +3,14 @@ package de.felixbruns.minecraft.handlers.commands;
 import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcPlayer;
-import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
-import de.felixbruns.minecraft.protocol.ChatColors;
+import de.felixbruns.minecraft.handlers.CommandHandler;
+import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
+import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
 
-@CommandHandler(commands = {"quit", "restart"})
-public class SpMcAdminCommandHandler extends SpMcBaseCommandHandler implements ChatColors {
+@CommandProvider(commands = {"quit", "restart"})
+public class AdminCommandHandler extends CommandHandler implements Colors {
     /**
      * Handle admin commands.
      * 
