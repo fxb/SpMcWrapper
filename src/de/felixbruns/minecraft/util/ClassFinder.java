@@ -99,8 +99,6 @@ public class ClassFinder {
 			/* Ignore. */
 		}
 		
-		System.out.println(classes);
-		
 		return classes;
 	}
 }
