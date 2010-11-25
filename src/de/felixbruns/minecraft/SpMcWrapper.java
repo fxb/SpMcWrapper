@@ -9,10 +9,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
-import de.felixbruns.minecraft.handlers.SpMcAdminCommandHandler;
-import de.felixbruns.minecraft.handlers.SpMcDaylightHandler;
-import de.felixbruns.minecraft.handlers.SpMcGenericCommandHandler;
-import de.felixbruns.minecraft.handlers.SpMcWarpPointHandler;
+import de.felixbruns.minecraft.handlers.SpMcDaylightPacketHandler;
+import de.felixbruns.minecraft.handlers.commands.SpMcAdminCommandHandler;
+import de.felixbruns.minecraft.handlers.commands.SpMcPlayerCommandHandler;
+import de.felixbruns.minecraft.handlers.commands.SpMcWarpPointCommandHandler;
 import de.felixbruns.minecraft.protocol.Position;
 
 public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
@@ -103,10 +103,10 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		/* Create a new player. */
 		SpMcPlayer player = new SpMcPlayer(this, serverSocket, clientSocket);
 		
-		player.addHandler(new SpMcWarpPointHandler());
-		player.addHandler(new SpMcDaylightHandler());
+		player.addHandler(new SpMcWarpPointCommandHandler());
+		player.addHandler(new SpMcDaylightPacketHandler());
 		player.addHandler(new SpMcAdminCommandHandler());
-		player.addHandler(new SpMcGenericCommandHandler());
+		player.addHandler(new SpMcPlayerCommandHandler());
 		
         player.start();
 	}

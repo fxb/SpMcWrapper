@@ -1,15 +1,17 @@
-package de.felixbruns.minecraft.handlers;
+package de.felixbruns.minecraft.handlers.commands;
 
 import java.util.Map.Entry;
 
 import de.felixbruns.minecraft.SpMcPlayer;
 import de.felixbruns.minecraft.SpMcStorage;
+import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
 import de.felixbruns.minecraft.protocol.ChatColors;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
-public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColors {
+@CommandHandler(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto"})
+public class SpMcWarpPointCommandHandler extends SpMcBaseCommandHandler implements ChatColors {
     /**
      * Handle a warp command sent by a player.
      * 
@@ -18,7 +20,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
      * @param args     The arguments to the command.
      */
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
-    	if(command.equals("set-warp")){
+    	if(command.equals("setwarp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-warp <name>");
     			
@@ -31,7 +33,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	else if(command.equals("set-global-warp")){
+    	else if(command.equals("setglobalwarp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-global-warp <name>");
     			
@@ -44,7 +46,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	else if(command.equals("delete-warp")){
+    	else if(command.equals("deletewarp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !delete-warp <name>");
     			
@@ -57,7 +59,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	else if(command.equals("delete-global-warp")){
+    	else if(command.equals("deleteglobalwarp")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !delete-global-warp <name>");
     			
@@ -70,7 +72,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	else if(command.equals("list-warps")){
+    	else if(command.equals("listwarps")){
     		int n;
 
 			player.sendMessage("");
@@ -134,7 +136,7 @@ public class SpMcWarpPointHandler extends SpMcCommandHandler implements ChatColo
     		
     		return null;
     	}
-    	else if(command.equals("warp-to")){
+    	else if(command.equals("warpto")){
     		if(args.length != 1){
     			player.sendMessage(COLOR_LIGHT_RED + "Usage: !warp <name>");
     			

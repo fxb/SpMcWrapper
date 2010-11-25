@@ -1,13 +1,16 @@
-package de.felixbruns.minecraft.handlers;
+package de.felixbruns.minecraft.handlers.commands;
 
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
 import de.felixbruns.minecraft.SpMcPlayer;
+import de.felixbruns.minecraft.handlers.SpMcPacketAdapter;
+import de.felixbruns.minecraft.handlers.commands.annotations.CommandHandler;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
 
-public abstract class SpMcCommandHandler extends SpMcAdapter {
+@CommandHandler()
+public abstract class SpMcBaseCommandHandler extends SpMcPacketAdapter {
 	/**
 	 * Handle a client packet, check if it is a chat message and if it starts
 	 * with an exclamation mark. If it does, parse and handle it as a command.

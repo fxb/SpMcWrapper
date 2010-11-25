@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.felixbruns.minecraft.handlers.SpMcHandler;
+import de.felixbruns.minecraft.handlers.SpMcPacketHandler;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
@@ -24,7 +24,7 @@ public class SpMcPlayer {
 	private SpMcWrapper       wrapper;
 	private PacketStream      serverStream;
 	private PacketStream      clientStream;
-	private List<SpMcHandler> handlers;
+	private List<SpMcPacketHandler> handlers;
 	
 	private String                name;
 	private int                   eid;
@@ -45,7 +45,7 @@ public class SpMcPlayer {
 		this.wrapper       = wrapper;
 		this.serverStream  = new PacketStream(serverSocket);
 		this.clientStream  = new PacketStream(clientSocket);
-		this.handlers      = new ArrayList<SpMcHandler>();
+		this.handlers      = new ArrayList<SpMcPacketHandler>();
 		
 		this.name       = null;
 		this.eid        = -1;
@@ -122,7 +122,7 @@ public class SpMcPlayer {
 	 * 
 	 * @param handler The handler to add.
 	 */
-	public void addHandler(SpMcHandler handler){
+	public void addHandler(SpMcPacketHandler handler){
 		synchronized(this.handlers){
 			this.handlers.add(handler);
         }
@@ -248,7 +248,7 @@ public class SpMcPlayer {
 		
 		/* Notify any external handlers. */
 		synchronized(this.handlers){
-    		for(SpMcHandler handler : this.handlers){
+    		for(SpMcPacketHandler handler : this.handlers){
     			packet = handler.handleClientPacket(SpMcPlayer.this, packet);
     			
     			if(packet == null){
@@ -314,7 +314,7 @@ public class SpMcPlayer {
 		
 		/* Notify any external handlers. */
 		synchronized(this.handlers){
-    		for(SpMcHandler handler : this.handlers){
+    		for(SpMcPacketHandler handler : this.handlers){
     			packet = handler.handleServerPacket(SpMcPlayer.this, packet);
     			
     			if(packet == null){
