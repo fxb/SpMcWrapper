@@ -13,74 +13,84 @@ import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
 @CommandProvider(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto"})
 public class WarpPointCommandHandler extends CommandHandler implements Colors {
-    /**
-     * Handle a warp command sent by a player.
-     * 
-     * @param player   The associated player.
-     * @param command  The command that was sent.
-     * @param args     The arguments to the command.
-     */
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
+    	/* Set a personal warp point. */
     	if(command.equals("setwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !addwarp <name>");
     			
     			return null;
     		}
     		
     		player.getWarpPoints().put(args[0], player.getPosition());
+			player.sendMessage(COLOR_LIGHT_GREEN, "Personal warp point '%s' has been set!", args[0]);
     		
     		SpMcStorage.saveWarpPoints(player.getName(), player.getWarpPoints());
     		
     		return null;
     	}
+    	/* Set a global warp point. */
     	else if(command.equals("setglobalwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !add-global-warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !addglobalwarp <name>");
     			
     			return null;
     		}
     		
     		player.getWrapper().getWarpPoints().put(args[0], player.getPosition());
+			player.sendMessage(COLOR_LIGHT_GREEN, "Global warp point '%s' has been set!", args[0]);
     		
     		SpMcStorage.saveWarpPoints(player.getWrapper().getWarpPoints());
     		
     		return null;
     	}
+    	/* Delete a personal warp point. */
     	else if(command.equals("deletewarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !delete-warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !deletewarp <name>");
     			
     			return null;
     		}
     		
-    		player.getWarpPoints().remove(args[0]);
+    		if(player.getWarpPoints().remove(args[0]) != null){
+    			player.sendMessage(COLOR_LIGHT_GREEN, "Warp point '%s' has been deleted!", args[0]);
+    		}
+    		else{
+    			player.sendMessage(COLOR_LIGHT_RED, "That warp point didn't exist!");
+    		}
     		
     		SpMcStorage.saveWarpPoints(player.getName(), player.getWarpPoints());
     		
     		return null;
     	}
+    	/* Delete a personal global warp point. */
     	else if(command.equals("deleteglobalwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !delete-global-warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !deleteglobalwarp <name>");
     			
     			return null;
     		}
     		
-    		player.getWrapper().getWarpPoints().remove(args[0]);
+    		if(player.getWrapper().getWarpPoints().remove(args[0]) != null){
+    			player.sendMessage(COLOR_LIGHT_GREEN, "Global warp point '%s' has been deleted!", args[0]);
+    		}
+    		else{
+    			player.sendMessage(COLOR_LIGHT_RED, "That warp point didn't exist!");
+    		}
     		
     		SpMcStorage.saveWarpPoints(player.getWrapper().getWarpPoints());
     		
     		return null;
     	}
+    	/* List all personal and global warp points and their distance. */
     	else if(command.equals("listwarps")){
     		int n;
 
 			player.sendMessage("");
-			player.sendMessage(COLOR_LIGHT_YELLOW + "Global warp points:");
+			player.sendMessage(COLOR_LIGHT_GREEN, "Global warp points:");
 			
 			if(player.getWrapper().getWarpPoints().isEmpty()){
-				player.sendMessage(COLOR_LIGHT_YELLOW + "  None");
+				player.sendMessage(COLOR_LIGHT_GREEN, "  None");
 			}
 			
 			n = 1;
@@ -89,17 +99,17 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     			String   name     = entry.getKey();
     			Position position = entry.getValue();
     			
-    			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
-    				" %2d. %s (%.2fm)", n++,
-    				name, position.distance(player.getPosition())
-    			));
+    			player.sendMessage(
+    				COLOR_LIGHT_GREEN, " %2d. %s (%.2fm)", n++,
+    				name, position.distanceTo(player)
+    			);
     		}
     		
 			player.sendMessage("");
-			player.sendMessage(COLOR_LIGHT_YELLOW + "Personal warp points:");
+			player.sendMessage(COLOR_LIGHT_GREEN, "Personal warp points:");
 			
 			if(player.getWarpPoints().isEmpty()){
-				player.sendMessage(COLOR_LIGHT_YELLOW + "  None");
+				player.sendMessage(COLOR_LIGHT_GREEN, "  None");
 			}
 			
 			n = 1;
@@ -108,19 +118,23 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     			String   name     = entry.getKey();
     			Position position = entry.getValue();
     			
-    			player.sendMessage(COLOR_LIGHT_YELLOW + String.format(
-        			" %2d. %s (%.2fm)", n++,
-        			name, position.distance(player.getPosition())
-        		));
+    			player.sendMessage(
+    				COLOR_LIGHT_GREEN, " %2d. %s (%.2fm)",
+    				n++, name, position.distanceTo(player)
+    			);
     		}
     		
 			player.sendMessage("");
     		
     		return null;
     	}
+    	/* 
+    	 * Warp to a given warp point. This will first lookit up in
+    	 * the personal warp points, then in the global warp points.
+    	 */
     	else if(command.equals("warp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !warp <name>");
     			
     			return null;
     		}
@@ -133,13 +147,19 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     		
     		if(target != null){
     			this.warp(player, target);
+    			
+    			player.sendMessage(COLOR_LIGHT_GREEN, "Warped to '%s'!", args[0]);
+    		}
+    		else{
+    			player.sendMessage(COLOR_LIGHT_RED, "That warp point doesn't exist!");
     		}
     		
     		return null;
     	}
+    	/* Warp to a given player. */
     	else if(command.equals("warpto")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !warp <name>");
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !warpto <player>");
     			
     			return null;
     		}
@@ -148,6 +168,14 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     		
     		if(target != null){
     			this.warp(player, target);
+    			
+    			player.sendMessage(
+    				COLOR_LIGHT_GREEN, "Warped to %s%s!",
+    				target.getDisplayName(), COLOR_LIGHT_GREEN
+    			);
+    		}
+    		else{
+    			player.sendMessage(COLOR_LIGHT_RED, "That player is not online!");
     		}
     		
     		return null;

@@ -7,6 +7,13 @@ import java.util.List;
 import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
 import de.felixbruns.minecraft.util.ClassFinder;
 
+/**
+ * Finds all command handlers in the package 'de.felixbruns.minecraft.handlers.commands'
+ * and provides static methods to retrieve them or check if a command is available. 
+ * 
+ * @author Felix Bruns <felixbruns@web.de>
+ *
+ */
 public class CommandFinder {
 	private static final List<String>                          commands;
 	private static final List<Class<? extends CommandHandler>> commandHandlerClasses;
@@ -19,8 +26,13 @@ public class CommandFinder {
 		commandHandlerClasses = new ArrayList<Class<? extends CommandHandler>>();
 		commandHandlers       = new ArrayList<CommandHandler>();
 		
+		/* 
+		 * Add command 'home', even if it is not provided by any of the command
+		 * handlers, since it will be handled by the minecraft server.
+		 */
 		commands.add("home");
 		
+		/* Loop over all found classes and check the annotaion for provided commands. */
 		for(Class<?> clazz : classes){
 			CommandProvider commandProvider = clazz.getAnnotation(CommandProvider.class);
 			
@@ -43,18 +55,40 @@ public class CommandFinder {
 		}
 	}
 	
+	/**
+	 * Get a list of commands that are available.
+	 * 
+	 * @return A list of commands.
+	 */
 	public static List<String> getCommands(){
 		return commands;
 	}
 	
+	/**
+	 * Check if a given command is available.
+	 * 
+	 * @param command The command to check.
+	 * 
+	 * @return true if it is available, false otherwise.
+	 */
 	public static boolean isCommandAvailable(String command){
 		return commands.contains(command);
 	}
 	
+	/**
+	 * Get a list of available {@link CommandHandler} classes.
+	 * 
+	 * @return A list of command handler classes.
+	 */
 	public static List<Class<? extends CommandHandler>> getCommandHandlerClasses(){
 		return commandHandlerClasses;
 	}
 	
+	/**
+	 * Get a list of available {@link CommandHandler} instances.
+	 * 
+	 * @return A list of command handlers.
+	 */
 	public static List<CommandHandler> getCommandHandlers(){
 		return commandHandlers;
 	}

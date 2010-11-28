@@ -12,7 +12,9 @@ import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
 import de.felixbruns.minecraft.handlers.CommandFinder;
 import de.felixbruns.minecraft.handlers.CommandHandler;
 import de.felixbruns.minecraft.handlers.DaylightPacketHandler;
+import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
+import de.felixbruns.minecraft.protocol.packets.PacketHandshake;
 
 public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	private SpMcSettings         settings;
@@ -39,18 +41,55 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 			this.settings.getWrapperPort(), 50,
 			InetAddress.getByName(this.settings.getWrapperHost())
 		);
+
+		/* Attach to already running minecraft server or start it. */
+		if(this.isServerRunning()){
+			System.out.println("Attaching to already running minecraft server...");
+		}
+		else{
+			System.out.println("Starting minecraft server...");
+			
+			this.starter = new SpMcMinecraftStarter(1024);
+			
+			this.starter.addHandler(this);
+			this.starter.start();
+		}
+	}
+	
+	public boolean isServerRunning(){
+		/* Open a connection to the minecraft server. */
+		try {
+			Socket socket = new Socket(
+				this.settings.getMinecraftHost(),
+				this.settings.getMinecraftPort()
+			);
+			
+			PacketStream stream = new PacketStream(socket);
+			
+			/* Exchange handshake packets. */
+			stream.write(new PacketHandshake("username"));
+			
+			PacketHandshake handshake = (PacketHandshake)stream.read();
+			
+			if(!handshake.usernameOrConnectionHash.isEmpty()){
+				socket.close();
+				
+				return true;
+			}
+			
+			socket.close();
+		}
+		catch(IOException e){
+			/* Ignore, will fail below. */
+		}
 		
-		/* Start the minecraft server. */
-		this.starter = new SpMcMinecraftStarter(1024);
-		
-		this.starter.addHandler(this);
-		this.starter.start();
+		return false;
 	}
     
 	public void stopServer(){
 		this.starter.terminate();
 	}
-
+	
 	public void restartServer(){
 		this.starter.terminate();
 		
@@ -59,6 +98,14 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		this.starter.addHandler(this);
 		this.starter.start();
 	}
+	
+	public boolean isConsoleAvailable(){
+		return this.starter != null;
+	}
+	
+    public void handleConsole(String message){
+    	System.out.println(message);
+    }
 	
 	public SpMcSettings getSettings(){
     	return this.settings;
@@ -91,10 +138,6 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	public Map<String, Position> getWarpPoints(){
 		return this.warpPoints;
 	}
-	
-    public void handleConsole(String message){
-    	System.out.println(message);
-    }
 	
 	public void handleConnection(Socket clientSocket) throws IOException {
 		/* Open a connection to the minecraft server. */

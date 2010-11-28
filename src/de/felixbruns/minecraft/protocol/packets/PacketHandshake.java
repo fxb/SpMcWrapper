@@ -8,4 +8,12 @@ import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direc
 public class PacketHandshake extends Packet {
 	@ProtocolField(name = "Username or Connection Hash")
 	public String usernameOrConnectionHash;
+	
+	public PacketHandshake(){
+		this("");
+	}
+	
+	public PacketHandshake(String usernameOrConnectionHash){
+		this.usernameOrConnectionHash = usernameOrConnectionHash;
+	}
 }

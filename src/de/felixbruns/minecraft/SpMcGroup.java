@@ -39,6 +39,10 @@ public class SpMcGroup {
 		this.players.add(name);
 	}
 	
+	public void removePlayer(String name){
+		this.players.remove(name);
+	}
+	
 	public boolean containsPlayer(String name){
 		return this.players.contains(name);
 	}

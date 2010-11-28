@@ -117,6 +117,10 @@ public class SpMcPlayer {
 		return this.group;
 	}
 	
+	public void setGroup(SpMcGroup group){
+		this.group = group;
+	}
+	
 	/**
 	 * Add a handler for handling packets.
 	 * 
@@ -163,6 +167,17 @@ public class SpMcPlayer {
 	 */
 	public void sendMessage(String message){
     	this.sendToClient(new PacketChatMessage(message));
+    }
+	
+	/**
+	 * Send a chat message to the client associated with this player.
+	 * 
+	 * @param color  The desired.
+	 * @param format The format.
+	 * @param args   The format arguments.
+	 */
+	public void sendMessage(String color, String format, Object... args){
+    	this.sendToClient(new PacketChatMessage(color + String.format(format, args)));
     }
 	
 	/**

@@ -8,10 +8,18 @@ import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
 
+/**
+ * Handles client packets and checks if they are chat messages containing
+ * a command. If yes, this will parse the command into parts (command and
+ * arguments) and call a handler to handle the command.
+ * 
+ * @author Felix Bruns <felixbruns@web.de>
+ *
+ */
 public abstract class CommandHandler extends PacketAdapter implements Colors {
 	/**
 	 * Handle a client packet, check if it is a chat message and if it starts
-	 * with an exclamation mark. If it does, parse and handle it as a command.
+	 * with the command character. If it does, parse and handle it as a command.
 	 * Otherwise just forward the packet.
 	 * 
 	 * @param player The associated player.
@@ -33,14 +41,20 @@ public abstract class CommandHandler extends PacketAdapter implements Colors {
         			if(!CommandFinder.isCommandAvailable(command)){
         				player.sendMessage(COLOR_LIGHT_YELLOW + "That command is not available!");
         				
+        				System.out.println(player.getName() + " tried to issue the unavailable command '" + command + "'.");
+        				
         				return null;
         			}
         			else if(!player.getGroup().isCommandAllowed(command)){
         				player.sendMessage(COLOR_LIGHT_RED + "You're not allowed to do that!");
         				
+        				System.out.println(player.getName() + " tried to issue the restricted command '" + command + "'!");
+        				
         				return null;
         			}
         			else{
+        				System.out.println(player.getName() + " issued command '" + command + "'.");
+        				
         				return this.handleCommand(player, packet, command, args);
         			}
     			}
