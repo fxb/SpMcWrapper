@@ -29,7 +29,10 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     		SpMcGroup  g = player.getWrapper().getGroups().get(args[1]);
     		
     		if(p == null || g != null){
-    			p.getGroup().removePlayer(args[0]);
+    			if(p.getGroup() != null){
+    				p.getGroup().removePlayer(args[0]);
+    			}
+    			
     			g.addPlayer(args[0]);
     			p.setGroup(g);
     			
