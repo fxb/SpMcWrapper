@@ -149,7 +149,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		/* Create a new player. */
 		SpMcPlayer player = new SpMcPlayer(this, serverSocket, clientSocket);
 		
-		player.addHandler(new DaylightPacketHandler());
+		//player.addHandler(new DaylightPacketHandler());
 		
 		for(CommandHandler handler : CommandFinder.getCommandHandlers()){
 			player.addHandler(handler);
