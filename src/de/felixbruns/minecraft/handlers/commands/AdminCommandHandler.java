@@ -8,10 +8,13 @@ import de.felixbruns.minecraft.SpMcStorage;
 import de.felixbruns.minecraft.handlers.CommandHandler;
 import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
 import de.felixbruns.minecraft.protocol.Colors;
+import de.felixbruns.minecraft.protocol.Item;
 import de.felixbruns.minecraft.protocol.packets.Packet;
+import de.felixbruns.minecraft.protocol.packets.PacketAddToInventory;
 import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
+import de.felixbruns.minecraft.util.ItemOrBlock;
 
-@CommandProvider(commands = {"setgroup", "quit", "restart"})
+@CommandProvider(commands = {"setgroup", "give", "quit", "restart"})
 public class AdminCommandHandler extends CommandHandler implements Colors {
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
     	/*
@@ -43,6 +46,45 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     		}
     		
     		SpMcStorage.saveGroups(player.getWrapper().getGroups());
+    		
+    		return null;
+    	}
+    	/*
+    	 * The 'give' command gives a specified amout of items to a player.
+    	 */
+    	if(command.equals("give")){
+    		if(args.length != 3){
+    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !give <player> <item> <amount>");
+    			
+    			return null;
+    		}
+    		
+    		SpMcPlayer p = player.getWrapper().getPlayers().get(args[0]);
+    		
+    		if(p == null){
+    			player.sendMessage(COLOR_LIGHT_RED, "That player doesn't exist!");
+    			
+    			return null;
+    		}
+    		
+    		PacketAddToInventory a = new PacketAddToInventory();
+    		
+    		a.item  = Short.parseShort(args[1]);
+    		a.count = Byte.parseByte(args[2]);
+    		a.life  = 0;
+    		
+    		if(ItemOrBlock.getById(a.item) == null){
+    			player.sendMessage(COLOR_LIGHT_RED, "Unknown item!");
+    			
+    			return null;
+    		}
+    		
+    		a.count = (a.count < 1) ? 1 : (a.count > 64) ? 64 : a.count;
+    		
+    		p.sendToClient(a);
+    		
+    		p.sendMessage(COLOR_LIGHT_GREEN, "You received %d '%s' from %s!", a.count, ItemOrBlock.getById(a.item), player.getName());
+    		player.sendMessage(COLOR_LIGHT_GREEN, "Gave %s %d '%s'!", p.getName(), a.count, ItemOrBlock.getById(a.item));
     		
     		return null;
     	}

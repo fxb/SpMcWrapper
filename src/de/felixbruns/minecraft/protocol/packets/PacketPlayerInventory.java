@@ -33,17 +33,17 @@ public class PacketPlayerInventory extends Packet {
 		this.items = new ArrayList<Item>();
 		
 		for(int slot = 0; slot < this.count; slot++){
-            Item item = new Item();
+			Item item = new Item();
+			
+			item.id = stream.readShort();
             
-            item.id = stream.readShort();
-            
-            if(item.id != -1){
-            	item.count  = stream.readByte();
-            	item.health = stream.readShort();
-            }
-        	
-        	this.items.add(item);
-        }
+			if(item.id != -1){
+				item.count  = stream.readByte();
+				item.health = stream.readShort();
+			}
+			
+			this.items.add(item);
+		}
 	}
 	
 	@ProtocolWriteHelper(name = "Items")
