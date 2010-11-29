@@ -31,7 +31,11 @@ public class PacketComplexEntities extends Packet {
 	public void readData(DataInputStream stream) throws IOException {
 		this.data = new byte[this.size];
 		
-		stream.read(this.data);
+		int read = 0;
+		
+		while(read < this.size){
+			read += stream.read(this.data, read, this.size - read);
+		}
 	}
 	
 	@ProtocolWriteHelper(name = "Data")

@@ -41,7 +41,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 			this.settings.getWrapperPort(), 50,
 			InetAddress.getByName(this.settings.getWrapperHost())
 		);
-
+		
 		/* Attach to already running minecraft server or start it. */
 		if(this.isServerRunning()){
 			System.out.println("Attaching to already running minecraft server...");

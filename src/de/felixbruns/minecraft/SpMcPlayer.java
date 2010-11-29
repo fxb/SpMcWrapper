@@ -311,15 +311,15 @@ public class SpMcPlayer {
 				SpMcPlayer player  = this.wrapper.getPlayers().get(name);
 				
 				chat.message = String.format(
-					"%s:§f %s", player.getDisplayName(), message
+					"%s:§f %s", (player != null) ? player.getDisplayName() : name, message
 				);
 			}
 			if(chat.message.matches("§e(.+) joined the game.")){
-				String     name  = chat.message.replaceAll("§e(.+) joined the game.", "$1");
-				SpMcPlayer player  = this.wrapper.getPlayers().get(name);
+				String     name   = chat.message.replaceAll("§e(.+) joined the game.", "$1");
+				SpMcPlayer player = this.wrapper.getPlayers().get(name);
 				
 				chat.message = String.format(
-					"%s§e joined the game.", player.getDisplayName()
+ 					"%s§e joined the game.", (player != null) ? player.getDisplayName() : name
 				);
 			}
 		}

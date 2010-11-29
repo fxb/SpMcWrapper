@@ -31,7 +31,7 @@ public class PlayerCommandHandler extends CommandHandler implements Colors {
     		
     		player.sendMessage(msg.toString());
 			player.sendMessage("");
-    		
+			
     		return null;
     	}
     	/* 

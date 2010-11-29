@@ -39,7 +39,7 @@ public class PacketStream {
 			int                     id     = this.input.readByte() & 0xFF;
 			Class<? extends Packet> clazz  = PacketFinder.getPacketClassById(id);
 			Packet                  packet = null;
-						
+			
 			if(clazz == null){
 				throw new RuntimeException("Packet class for id '" + id + "' not found!");
 			}
@@ -75,7 +75,19 @@ public class PacketStream {
 						field.setDouble(packet, this.input.readDouble());
 					}
 					else if(type.equals(Boolean.class) || type.equals(boolean.class)){
-						field.setBoolean(packet, this.input.readBoolean());
+						int value = this.input.read();
+						
+						if(value == 0x00){
+							field.setBoolean(packet, false);
+						}
+						else if(value == 0x01){
+							field.setBoolean(packet, true);
+						}
+						else{
+							System.out.println("WARNING! Reading boolean but got value '" + value + "'!");
+							
+							field.setBoolean(packet, true);
+						}
 					}
 					else if(type.equals(String.class)){
 						int    len  = this.input.readShort();

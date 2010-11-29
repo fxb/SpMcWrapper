@@ -12,6 +12,6 @@ public class PacketUseEntity extends Packet {
 	@ProtocolField(name = "Target")
 	public int target;
 	
-	@ProtocolField(name = "Type")
-	public byte type; /* 0x00: Chest, Furnace, Minecart, Boat, ... 0x01: Cow, Sheep, Pig, Player?, ... */
+	@ProtocolField(name = "Attacking")
+	public boolean attacking;
 }
