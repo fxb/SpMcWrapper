@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
 import de.felixbruns.minecraft.handlers.CommandFinder;
 import de.felixbruns.minecraft.handlers.CommandHandler;
-import de.felixbruns.minecraft.handlers.DaylightPacketHandler;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.PacketHandshake;

@@ -8,7 +8,6 @@ import de.felixbruns.minecraft.SpMcStorage;
 import de.felixbruns.minecraft.handlers.CommandHandler;
 import de.felixbruns.minecraft.handlers.commands.annotations.CommandProvider;
 import de.felixbruns.minecraft.protocol.Colors;
-import de.felixbruns.minecraft.protocol.Item;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketAddToInventory;
 import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;

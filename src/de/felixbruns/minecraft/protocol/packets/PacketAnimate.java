@@ -10,5 +10,5 @@ public class PacketAnimate extends Packet {
 	public int eid;
 	
 	@ProtocolField(name = "What")
-	public byte what; /* 0x01: Arm, 0x02: ? */
+	public byte what; /* 0x01: Arm, 0x02: ?, 0x68: Crouch, 0x69: Stand up. */
 }
