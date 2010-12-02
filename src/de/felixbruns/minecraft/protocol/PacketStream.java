@@ -7,7 +7,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.Socket;
-import java.nio.charset.Charset;
 
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
@@ -90,12 +89,7 @@ public class PacketStream {
 						}
 					}
 					else if(type.equals(String.class)){
-						int    len  = this.input.readShort();
-						byte[] data = new byte[len];
-						
-						this.input.read(data);
-						
-						field.set(packet, new String(data, Charset.forName("UTF-8")));
+						field.set(packet, this.input.readUTF());
 					}
 					else{
 						boolean handled = false;
@@ -175,13 +169,7 @@ public class PacketStream {
 						this.output.writeBoolean(field.getBoolean(packet));
 					}
 					else if(type.equals(String.class)){
-						String s    = (String)field.get(packet);
-						byte[] data = s.getBytes(
-							Charset.forName("UTF-8")
-						);
-						
-						this.output.writeShort((short)data.length);
-						this.output.write(data);
+						this.output.writeUTF((String)field.get(packet));
 					}
 					else{
 						boolean handled = false;
@@ -210,6 +198,8 @@ public class PacketStream {
 	        catch(InvocationTargetException e){
 				throw new RuntimeException(e);
 	        }
+	        
+	        this.output.flush();
 		}
 	}
 }

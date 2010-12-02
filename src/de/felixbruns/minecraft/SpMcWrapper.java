@@ -11,9 +11,7 @@ import java.util.Map.Entry;
 import de.felixbruns.minecraft.SpMcStorage.SpMcSettings;
 import de.felixbruns.minecraft.handlers.CommandFinder;
 import de.felixbruns.minecraft.handlers.CommandHandler;
-import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
-import de.felixbruns.minecraft.protocol.packets.PacketHandshake;
 
 public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	private SpMcSettings         settings;
@@ -42,7 +40,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		);
 		
 		/* Attach to already running minecraft server or start it. */
-		if(this.isServerRunning()){
+		/*if(this.isServerRunning()){
 			System.out.println("Attaching to already running minecraft server...");
 		}
 		else{
@@ -52,37 +50,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 			
 			this.starter.addHandler(this);
 			this.starter.start();
-		}
-	}
-	
-	public boolean isServerRunning(){
-		/* Open a connection to the minecraft server. */
-		try {
-			Socket socket = new Socket(
-				this.settings.getMinecraftHost(),
-				this.settings.getMinecraftPort()
-			);
-			
-			PacketStream stream = new PacketStream(socket);
-			
-			/* Exchange handshake packets. */
-			stream.write(new PacketHandshake("username"));
-			
-			PacketHandshake handshake = (PacketHandshake)stream.read();
-			
-			if(!handshake.usernameOrConnectionHash.isEmpty()){
-				socket.close();
-				
-				return true;
-			}
-			
-			socket.close();
-		}
-		catch(IOException e){
-			/* Ignore, will fail below. */
-		}
-		
-		return false;
+		}*/
 	}
     
 	public void stopServer(){
