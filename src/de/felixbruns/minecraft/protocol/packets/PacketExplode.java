@@ -28,7 +28,7 @@ public class PacketExplode extends Packet {
 	public float unknown;
 	
 	@ProtocolField(name = "Size")
-	public short size;
+	public int size;
 	
 	@ProtocolField(name = "Coordinates")
 	public List<Position> coordinates;

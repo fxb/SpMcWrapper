@@ -14,12 +14,4 @@ public class PacketSpawnPosition extends Packet {
 	
 	@ProtocolField(name = "Z")
 	public int z;
-	
-	public String toString(){
-		return String.format(
-			"%s: %d, %d, %d",
-			this.getClass().getName(),
-			this.x, this.y, this.z
-		);
-	}
 }

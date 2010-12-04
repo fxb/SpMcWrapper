@@ -30,7 +30,7 @@ public class PacketMultiBlockChange extends Packet {
 	
 	@ProtocolReadHelper(name = "Blocks")
 	public void readBlocks(DataInputStream stream) throws IOException {
-		this.blocks = new ArrayList<Block>(this.size);
+		this.blocks = new ArrayList<Block>(this.size & 0xffff);
 		
 		for(int i = 0; i < this.size; i++){
 			this.blocks.add(new Block());
@@ -40,9 +40,9 @@ public class PacketMultiBlockChange extends Packet {
 			short coordinates = stream.readShort();
 			
 			this.blocks.get(i).position = new Position(
-				(coordinates & 0xF000) >> 12,
-				(coordinates & 0x00FF),
-				(coordinates & 0x0F00) >>  8
+				(coordinates & 0xf000) >> 12,
+				(coordinates & 0x00ff),
+				(coordinates & 0x0f00) >>  8
 			);
 		}
 		

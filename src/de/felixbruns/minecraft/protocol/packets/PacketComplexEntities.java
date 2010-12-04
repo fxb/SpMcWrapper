@@ -29,7 +29,7 @@ public class PacketComplexEntities extends Packet {
 	
 	@ProtocolReadHelper(name = "Data")
 	public void readData(DataInputStream stream) throws IOException {
-		this.data = new byte[this.size];
+		this.data = new byte[this.size & 0xffff];
 		
 		stream.readFully(this.data);
 	}
