@@ -22,7 +22,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	private Map<String, SpMcGroup>  groups;
 	private Map<String, Position>   warpPoints;
 	
-	public SpMcWrapper() throws IOException {
+	public SpMcWrapper(boolean startServer) throws IOException {
 		super("SpMcWrapper");
 		
 		/* Load settings. */
@@ -39,25 +39,41 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 			InetAddress.getByName(this.settings.getWrapperHost())
 		);
 		
-		/* Attach to already running minecraft server or start it. */
-		/*if(this.isServerRunning()){
-			System.out.println("Attaching to already running minecraft server...");
-		}
-		else{
-			System.out.println("Starting minecraft server...");
+		/* Start server or use existing one. */
+		if(startServer){
+			System.out.println("Starting local minecraft server...");
 			
 			this.starter = new SpMcMinecraftStarter(1024);
 			
 			this.starter.addHandler(this);
 			this.starter.start();
-		}*/
+		}
+		else{
+			System.out.format(
+				"Using minecraft server @ %s:%d...",
+				this.settings.getMinecraftHost(),
+				this.settings.getMinecraftPort()
+			);
+		}
 	}
     
 	public void stopServer(){
+		if(!this.isConsoleAvailable()){
+			System.out.println("WARNING: Can't stop server, since console access is not available!");
+			
+			return;
+		}
+		
 		this.starter.terminate();
 	}
 	
 	public void restartServer(){
+		if(!this.isConsoleAvailable()){
+			System.out.println("WARNING: Can't restart server, since console access is not available!");
+			
+			return;
+		}
+		
 		this.starter.terminate();
 		
 		this.starter = new SpMcMinecraftStarter(1024);
@@ -138,7 +154,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		SpMcWrapper wrapper = new SpMcWrapper();
+		SpMcWrapper wrapper = new SpMcWrapper(false);
 		
 		wrapper.start();
 		wrapper.join();

@@ -1,5 +1,6 @@
 package de.felixbruns.minecraft.protocol.packets;
 
+import de.felixbruns.minecraft.protocol.Look;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
@@ -30,6 +31,10 @@ public class PacketPlayerPositionAndLook extends Packet {
 	
 	public Position getPosition(){
 		return new Position(this.x, this.y, this.z);
+	}
+	
+	public Look getLook(){
+		return new Look(this.yaw, this.pitch);
 	}
 	
 	public String toString(){

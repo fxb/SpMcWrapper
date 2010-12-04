@@ -1,5 +1,6 @@
 package de.felixbruns.minecraft.protocol.packets;
 
+import de.felixbruns.minecraft.protocol.Look;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolField;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket;
 import de.felixbruns.minecraft.protocol.packets.annotations.ProtocolPacket.Direction;
@@ -14,4 +15,8 @@ public class PacketPlayerLook extends Packet {
 	
 	@ProtocolField(name = "On Ground")
 	public boolean onGround;
+	
+	public Look getLook(){
+		return new Look(this.yaw, this.pitch);
+	}
 }

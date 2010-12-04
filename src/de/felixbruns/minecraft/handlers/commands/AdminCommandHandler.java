@@ -22,7 +22,7 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     	 */
     	if(command.equals("setgroup")){
     		if(args.length != 2){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !setgroup <player> <group>");
+    			player.sendUsage("setgroup <player> <group>");
     			
     			return null;
     		}
@@ -53,7 +53,7 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     	 */
     	if(command.equals("give")){
     		if(args.length != 3){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !give <player> <item> <amount>");
+    			player.sendUsage("give <player> <item> <amount>");
     			
     			return null;
     		}

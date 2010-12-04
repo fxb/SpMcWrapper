@@ -11,13 +11,13 @@ import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
-@CommandProvider(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto"})
+@CommandProvider(commands = {"setwarp", "setglobalwarp", "deletewarp", "deleteglobalwarp", "listwarps", "warp", "warpto", "warptocoords"})
 public class WarpPointCommandHandler extends CommandHandler implements Colors {
     public Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args){
     	/* Set a personal warp point. */
     	if(command.equals("setwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !addwarp <name>");
+    			player.sendUsage("addwarp <name>");
     			
     			return null;
     		}
@@ -32,7 +32,7 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     	/* Set a global warp point. */
     	else if(command.equals("setglobalwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !addglobalwarp <name>");
+    			player.sendUsage("addglobalwarp <name>");
     			
     			return null;
     		}
@@ -47,7 +47,7 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     	/* Delete a personal warp point. */
     	else if(command.equals("deletewarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !deletewarp <name>");
+    			player.sendUsage("deletewarp <name>");
     			
     			return null;
     		}
@@ -66,7 +66,7 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     	/* Delete a personal global warp point. */
     	else if(command.equals("deleteglobalwarp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED + "Usage: !deleteglobalwarp <name>");
+    			player.sendUsage("deleteglobalwarp <name>");
     			
     			return null;
     		}
@@ -134,7 +134,7 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     	 */
     	else if(command.equals("warp")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !warp <name>");
+    			player.sendUsage("warp <name>");
     			
     			return null;
     		}
@@ -159,7 +159,7 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
     	/* Warp to a given player. */
     	else if(command.equals("warpto")){
     		if(args.length != 1){
-    			player.sendMessage(COLOR_LIGHT_RED, "Usage: !warpto <player>");
+    			player.sendUsage("warpto <player>");
     			
     			return null;
     		}
@@ -203,11 +203,11 @@ public class WarpPointCommandHandler extends CommandHandler implements Colors {
 	private void warp(SpMcPlayer player, Position target){
 		PacketPlayerPositionAndLook packet = new PacketPlayerPositionAndLook();
 		
-		/* Fill the packet with position information. */
+		/* Fill the packet with position and look information. */
 		packet.x        = player.getPosition().x;
 		packet.z        = player.getPosition().z;
-		packet.yaw      = 0.0f;
-		packet.pitch    = 0.0f;
+		packet.yaw      = player.getLook().yaw;
+		packet.pitch    = player.getLook().pitch;
 		packet.onGround = false;
 		
 		/* First move up to level 128. */

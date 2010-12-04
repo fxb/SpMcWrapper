@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import de.felixbruns.minecraft.handlers.PacketHandler;
+import de.felixbruns.minecraft.protocol.Colors;
+import de.felixbruns.minecraft.protocol.Look;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.Packet;
@@ -17,10 +19,11 @@ import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
 import de.felixbruns.minecraft.protocol.packets.PacketLogin;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerBlockPlacement;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerDigging;
+import de.felixbruns.minecraft.protocol.packets.PacketPlayerLook;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPosition;
 import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
 
-public class SpMcPlayer {
+public class SpMcPlayer implements Colors {
 	private SpMcWrapper         wrapper;
 	private PacketStream        serverStream;
 	private PacketStream        clientStream;
@@ -29,6 +32,7 @@ public class SpMcPlayer {
 	private String                name;
 	private int                   eid;
 	private Position              position;
+	private Look                  look;
 	private Map<String, Position> warpPoints;
 	private SpMcGroup             group;
 	
@@ -50,6 +54,7 @@ public class SpMcPlayer {
 		this.name       = null;
 		this.eid        = -1;
 		this.position   = new Position();
+		this.look       = new Look();
 		this.warpPoints = new HashMap<String, Position>();
 		this.group      = null;
 	}
@@ -102,6 +107,15 @@ public class SpMcPlayer {
 	 */
 	public Position getPosition(){
 		return this.position;
+	}
+	
+	/**
+	 * Get the current in-game look.
+	 * 
+	 * @return The look of the player.
+	 */
+	public Look getLook(){
+		return this.look;
 	}
 	
 	/**
@@ -172,12 +186,27 @@ public class SpMcPlayer {
 	/**
 	 * Send a chat message to the client associated with this player.
 	 * 
-	 * @param color  The desired.
+	 * @param color  The desired color.
 	 * @param format The format.
 	 * @param args   The format arguments.
 	 */
 	public void sendMessage(String color, String format, Object... args){
     	this.sendToClient(new PacketChatMessage(color + String.format(format, args)));
+    }
+	
+	/**
+	 * Send a usage message to the client associated with this player.
+	 * This will automatically prepend the command character.
+	 * 
+	 * @param format The format.
+	 * @param args   The format arguments.
+	 */
+	public void sendUsage(String format, Object... args){
+    	String commandChar = this.getWrapper().getSettings().getCommandChar();
+    	
+    	this.sendToClient(new PacketChatMessage(
+    		COLOR_LIGHT_RED + "Usage: " + commandChar + String.format(format, args)
+    	));
     }
 	
 	/**
@@ -198,12 +227,16 @@ public class SpMcPlayer {
 		else if(packet instanceof PacketDisconnect){
 			this.wrapper.getPlayers().remove(this.name);
 		}
-		/* Keep track of the players position. */
+		/* Keep track of the players position and look. */
 		else if(packet instanceof PacketPlayerPosition){
 			this.position = ((PacketPlayerPosition)packet).getPosition();
 		}
+		else if(packet instanceof PacketPlayerLook){
+			this.look = ((PacketPlayerLook)packet).getLook();
+		}
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
+			this.look     = ((PacketPlayerPositionAndLook)packet).getLook();
 		}
 		else if(packet instanceof PacketPlayerDigging && this.group != null && !this.group.isPacketAllowed(packet)){
 			PacketPlayerDigging digging = ((PacketPlayerDigging)packet);
@@ -298,9 +331,10 @@ public class SpMcPlayer {
 		else if(packet instanceof PacketDisconnect){
 			this.wrapper.getPlayers().remove(this.name);
 		}
-		/* Keep track of the players position. */
+		/* Keep track of the players position and look. */
 		else if(packet instanceof PacketPlayerPositionAndLook){
 			this.position = ((PacketPlayerPositionAndLook)packet).getPosition();
+			this.look     = ((PacketPlayerPositionAndLook)packet).getLook();
 		}
 		else if(packet instanceof PacketChatMessage){
 			PacketChatMessage chat = (PacketChatMessage)packet;
