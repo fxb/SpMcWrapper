@@ -197,6 +197,16 @@ public enum ItemOrBlock {
 		return null;
 	}
 	
+	public static ItemOrBlock getByName(String name){
+		for(ItemOrBlock o : ItemOrBlock.values()){
+			if(o.name.equalsIgnoreCase(name)){
+				return o;
+			}
+		}
+		
+		return null;
+	}
+	
 	public String toString(){
 		return this.name;
 	}

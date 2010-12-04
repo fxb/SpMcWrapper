@@ -52,13 +52,40 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     	 * The 'give' command gives a specified amout of items to a player.
     	 */
     	if(command.equals("give")){
-    		if(args.length != 3){
-    			player.sendUsage("give <player> <item> <amount>");
+    		if(args.length < 2 || args.length > 3){
+    			player.sendUsage("give [player] <item> <amount>");
     			
     			return null;
     		}
     		
-    		SpMcPlayer p = player.getWrapper().getPlayers().get(args[0]);
+    		SpMcPlayer  p     = null;
+    		ItemOrBlock item  = null;
+    		int         count = 0;
+    		
+    		if(args.length == 2){
+    			p = player;
+    			
+    			try {
+    				item = ItemOrBlock.getById(Integer.parseInt(args[0]));
+    			}
+    			catch(NumberFormatException e){
+    				item = ItemOrBlock.getByName(args[0]);
+    			}
+    			
+    			count = Integer.parseInt(args[1]);
+    		}
+    		else if(args.length == 3){
+    			p = player.getWrapper().getPlayers().get(args[0]);
+    			
+    			try {
+    				item = ItemOrBlock.getById(Integer.parseInt(args[1]));
+    			}
+    			catch(NumberFormatException e){
+    				item = ItemOrBlock.getByName(args[1]);
+    			}
+    			
+    			count = Integer.parseInt(args[2]);
+    		}
     		
     		if(p == null){
     			player.sendMessage(COLOR_LIGHT_RED, "That player doesn't exist!");
@@ -66,24 +93,34 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     			return null;
     		}
     		
-    		PacketAddToInventory a = new PacketAddToInventory();
-    		
-    		a.item  = Short.parseShort(args[1]);
-    		a.count = Byte.parseByte(args[2]);
-    		a.life  = 0;
-    		
-    		if(ItemOrBlock.getById(a.item) == null){
+    		if(item == null || item.equals(ItemOrBlock.BLOCK_AIR)){
     			player.sendMessage(COLOR_LIGHT_RED, "Unknown item!");
     			
     			return null;
     		}
     		
-    		a.count = (a.count < 1) ? 1 : (a.count > 64) ? 64 : a.count;
+    		PacketAddToInventory a = new PacketAddToInventory();
     		
-    		p.sendToClient(a);
+			a.item = (short)item.id;
+    		a.life = 0;
     		
-    		p.sendMessage(COLOR_LIGHT_GREEN, "You received %d '%s' from %s!", a.count, ItemOrBlock.getById(a.item), player.getName());
-    		player.sendMessage(COLOR_LIGHT_GREEN, "Gave %s %d '%s'!", p.getName(), a.count, ItemOrBlock.getById(a.item));
+    		int n = count;
+    		
+			while(n > 0){
+				a.count = (byte)Math.min(n, 64);
+				
+	    		p.sendToClient(a);
+	    		
+	    		n -= a.count;
+			}
+    		
+    		if(p == player){
+    			player.sendMessage(COLOR_LIGHT_GREEN, "You gave yourself %d '%s'!", count, item);
+    		}
+    		else{
+    			p.sendMessage(COLOR_LIGHT_GREEN, "You received %d '%s' from %s!", count, item, player.getName());
+    			player.sendMessage(COLOR_LIGHT_GREEN, "Gave %s %d '%s'!", p.getName(), count, item);
+    		}
     		
     		return null;
     	}

@@ -1,7 +1,8 @@
 package de.felixbruns.minecraft.handlers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.StringTokenizer;
+import java.util.List;
 
 import de.felixbruns.minecraft.SpMcPlayer;
 import de.felixbruns.minecraft.protocol.Colors;
@@ -32,7 +33,7 @@ public abstract class CommandHandler extends PacketAdapter implements Colors {
     		PacketChatMessage chat = (PacketChatMessage)packet;
     		
     		if(chat.message.startsWith(commandChar)){
-    			String[] parts = this.parseCommand(commandChar, chat.message);
+    			String[] parts = this.parseCommand(chat.message.substring(1));
     			
     			if(parts.length > 0){
         			String   command = parts[0];
@@ -74,21 +75,56 @@ public abstract class CommandHandler extends PacketAdapter implements Colors {
     public abstract Packet handleCommand(SpMcPlayer player, Packet packet, String command, String... args);
     
     /**
-     * Split a chat message into an array of strings.
+     * Split a chat message into an array of strings.<br><br>
+     * 
+     * <b>Note:</b> Supports quoted strings.
      * 
      * @param message The chat message to split.
      * 
      * @return An array of strings.
      */
-    private String[] parseCommand(String commandChar, String message){
-    	StringTokenizer tokenizer = new StringTokenizer(message, commandChar + " ");
-		String          parts[]   = new String[tokenizer.countTokens()];
-		int             i         = 0;
+    private String[] parseCommand(String message){
+		List<String> tokens = new ArrayList<String>();
+		StringBuffer token  = new StringBuffer();
+		boolean      quoted = false;
 		
-		while(tokenizer.hasMoreTokens()){
-			parts[i++] = tokenizer.nextToken();
+		/* Loop over all characters. */
+		for(int i = 0; i < message.length(); i++){
+			char c = message.charAt(i);
+			
+			/* 
+			 * If character is a space, either append it
+			 * to the current token if it was quoted, or
+			 * end the current token and add it to the list
+			 * of tokens.
+			 */
+			if(c == ' '){
+				if(quoted){
+					token.append(c);
+				}
+				else{
+					if(token.length() > 0){
+						tokens.add(token.toString());
+					}
+					
+					token.setLength(0);
+				}
+			}
+			/* If character is a quote, toggle quoted flag. */
+			else if(c == '"'){
+				quoted = !quoted;
+			}
+			/* Append any other character. */
+			else{
+				token.append(c);
+			}
 		}
 		
-		return parts;
+		/* Add the last token to the list of tokens. */
+		if(token.length() > 0){
+			tokens.add(token.toString());
+		}
+		
+		return (String[])tokens.toArray(new String[0]);
     }
 }
