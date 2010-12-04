@@ -49,19 +49,42 @@ public class SpMcGroup {
 	
 	public boolean isPacketAllowed(Packet packet){
 		ProtocolPacket protocolPacket = packet.getClass().getAnnotation(ProtocolPacket.class);
+		String         name           = protocolPacket.name();
 		
+		/* Check if packet is disallowed. */
+		if(this.packets.contains("-" + name)){
+			return false;
+		}
+		
+		/* Check if packet is allowed. */
+		if(this.packets.contains(name) || this.packets.contains("+" + name)){
+			return true;
+		}
+		
+		/* Check if all packets are allowed. */
 		if(this.packets.contains("*")){
 			return true;
 		}
 		
-		return this.packets.contains(protocolPacket.name());
+		return false;
 	}
 	
 	public boolean isCommandAllowed(String command){
+		/* Check if command is disallowed. */
+		if(this.commands.contains("-" + command)){
+			return false;
+		}
+		
+		/* Check if command is allowed. */
+		if(this.commands.contains(command) || this.commands.contains("+" + command)){
+			return true;
+		}
+		
+		/* Check if all packets are allowed. */
 		if(this.commands.contains("*")){
 			return true;
 		}
 		
-		return this.commands.contains(command);
+		return false;
 	}
 }

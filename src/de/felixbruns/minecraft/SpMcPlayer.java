@@ -12,16 +12,7 @@ import de.felixbruns.minecraft.protocol.Colors;
 import de.felixbruns.minecraft.protocol.Look;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
-import de.felixbruns.minecraft.protocol.packets.Packet;
-import de.felixbruns.minecraft.protocol.packets.PacketBlockChange;
-import de.felixbruns.minecraft.protocol.packets.PacketChatMessage;
-import de.felixbruns.minecraft.protocol.packets.PacketDisconnect;
-import de.felixbruns.minecraft.protocol.packets.PacketLogin;
-import de.felixbruns.minecraft.protocol.packets.PacketPlayerBlockPlacement;
-import de.felixbruns.minecraft.protocol.packets.PacketPlayerDigging;
-import de.felixbruns.minecraft.protocol.packets.PacketPlayerLook;
-import de.felixbruns.minecraft.protocol.packets.PacketPlayerPosition;
-import de.felixbruns.minecraft.protocol.packets.PacketPlayerPositionAndLook;
+import de.felixbruns.minecraft.protocol.packets.*;
 
 public class SpMcPlayer implements Colors {
 	private SpMcWrapper         wrapper;
@@ -35,6 +26,8 @@ public class SpMcPlayer implements Colors {
 	private Look                  look;
 	private Map<String, Position> warpPoints;
 	private SpMcGroup             group;
+	
+	private boolean running;
 	
 	/**
 	 * Create a new player.
@@ -57,6 +50,8 @@ public class SpMcPlayer implements Colors {
 		this.look       = new Look();
 		this.warpPoints = new HashMap<String, Position>();
 		this.group      = null;
+		
+		this.running = false;
 	}
 	
 	/**
@@ -225,7 +220,11 @@ public class SpMcPlayer implements Colors {
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
+			System.out.format("'%s' disconnected! Reason: %s\n", this.name, ((PacketDisconnect)packet).reason);
+			
 			this.wrapper.getPlayers().remove(this.name);
+			
+			this.disconnect();
 		}
 		/* Keep track of the players position and look. */
 		else if(packet instanceof PacketPlayerPosition){
@@ -329,7 +328,11 @@ public class SpMcPlayer implements Colors {
 		}
 		/* Remove client from wrapper on disconnect. */
 		else if(packet instanceof PacketDisconnect){
+			System.out.format("Server disconnected '%s'! Reason: %s\n", this.name, ((PacketDisconnect)packet).reason);
+			
 			this.wrapper.getPlayers().remove(this.name);
+			
+			this.disconnect();
 		}
 		/* Keep track of the players position and look. */
 		else if(packet instanceof PacketPlayerPositionAndLook){
@@ -376,6 +379,8 @@ public class SpMcPlayer implements Colors {
 	 * Start read-write threads which pass and handle packets in both directions.
 	 */
 	public void start(){
+		this.running = true;
+		
 		new SpMcReadWriteThread(SpMcReadWriteThread.DIRECTION_CLIENT_SERVER).start();
 		new SpMcReadWriteThread(SpMcReadWriteThread.DIRECTION_SERVER_CLIENT).start();
 	}
@@ -384,6 +389,10 @@ public class SpMcPlayer implements Colors {
 	 * Disconnect both, the server and the client side of this player.
 	 */
 	public void disconnect(){
+		System.out.format("Closing connection to '%s'!\n", this.name);
+		
+		this.running = false;
+		
 		this.serverStream.close();
 		this.clientStream.close();
 	}
@@ -429,7 +438,7 @@ public class SpMcPlayer implements Colors {
 		public void run(){
 			Packet packet;
 			
-			while(true){
+			while(SpMcPlayer.this.running){
 				try {
 		    		packet = this.input.read();
 		    		
@@ -439,7 +448,7 @@ public class SpMcPlayer implements Colors {
 	    			else if(this.direction == DIRECTION_SERVER_CLIENT){
 	    				packet = SpMcPlayer.this.handleServerPacket(packet);
 	    			}
-		    		
+	    			
 	    			if(packet != null){
 	    				this.output.write(packet);
 	    			}
@@ -447,7 +456,11 @@ public class SpMcPlayer implements Colors {
 		        catch(IOException e){
 					SpMcPlayer.this.wrapper.getPlayers().remove(SpMcPlayer.this.name);
 					
-		        	System.err.println("Lost connection to " + SpMcPlayer.this.name + "!");
+	    			if(!SpMcPlayer.this.running){
+	    				return;
+	    			}
+					
+		        	System.err.format("Lost connection to '%s'!\n", SpMcPlayer.this.name);
 		        	
 		        	return;
 		        }

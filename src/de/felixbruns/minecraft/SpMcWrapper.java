@@ -39,6 +39,12 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 			InetAddress.getByName(this.settings.getWrapperHost())
 		);
 		
+		System.out.format(
+			"Listening on '%s:%d'...\n",
+			this.settings.getWrapperHost(),
+			this.settings.getWrapperPort()
+		);
+		
 		/* Start server or use existing one. */
 		if(startServer){
 			System.out.println("Starting local minecraft server...");
@@ -50,7 +56,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		}
 		else{
 			System.out.format(
-				"Using minecraft server @ %s:%d...",
+				"Attaching to minecraft server at '%s:%d'...\n",
 				this.settings.getMinecraftHost(),
 				this.settings.getMinecraftPort()
 			);
@@ -122,22 +128,28 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		return this.warpPoints;
 	}
 	
-	public void handleConnection(Socket clientSocket) throws IOException {
+	public void handleConnection(Socket client) throws IOException {
+		System.out.format(
+			"Accepting connection from '%s:%d'...\n",
+			client.getInetAddress().getHostName(),
+			client.getPort()
+		);
+		
 		/* Open a connection to the minecraft server. */
-		Socket serverSocket = new Socket(
+		Socket server = new Socket(
 			this.settings.getMinecraftHost(),
 			this.settings.getMinecraftPort()
 		);
 		
 		/* Create a new player. */
-		SpMcPlayer player = new SpMcPlayer(this, serverSocket, clientSocket);
+		SpMcPlayer player = new SpMcPlayer(this, server, client);
 		
-		//player.addHandler(new DaylightPacketHandler());
-		
+		/* Add command handlers. */
 		for(CommandHandler handler : CommandFinder.getCommandHandlers()){
 			player.addHandler(handler);
 		}
 		
+		/* Start player I/O threads. */
         player.start();
 	}
 	
