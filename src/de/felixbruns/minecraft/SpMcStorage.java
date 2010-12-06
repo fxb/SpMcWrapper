@@ -18,9 +18,9 @@ import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.util.GsonPrettyPrint;
 
 public class SpMcStorage {	
-	private static final String STORAGE_SETTINGS    = "settings.json";
-	private static final String STORAGE_GROUPS      = "groups.json";
-	private static final String STORAGE_WARP_POINTS = "warp-points";
+	private static final File STORAGE_SETTINGS    = new File("settings.json");
+	private static final File STORAGE_GROUPS      = new File("groups.json");
+	private static final File STORAGE_WARP_POINTS = new File("warp-points");
 	
 	private static final Gson            gson;
 	private static final GsonPrettyPrint gsonPrettyPrint;
@@ -106,9 +106,9 @@ public class SpMcStorage {
 		Map<String, Position> warpPoints = new HashMap<String, Position>();
 		
 		try {
-			warpPoints = gson.fromJson(new FileReader(
-				STORAGE_WARP_POINTS + "/" + username + ".json"
-			), type);
+			warpPoints = gson.fromJson(new FileReader(new File(
+				STORAGE_WARP_POINTS, username + ".json"
+			)), type);
 		}
 		catch(IOException e){
 			/* Ignore. */
@@ -128,9 +128,11 @@ public class SpMcStorage {
 	
 	public static void saveWarpPoints(String username, Map<String, Position> warpPoints){
 		try {
-			new File(STORAGE_WARP_POINTS).mkdirs();
+			STORAGE_WARP_POINTS.mkdirs();
 			
-			FileWriter writer = new FileWriter(STORAGE_WARP_POINTS + "/" + username + ".json");
+			FileWriter writer = new FileWriter(new File(
+				STORAGE_WARP_POINTS, username + ".json"
+			));
 			
 			gsonPrettyPrint.toJson(warpPoints, writer);
 			

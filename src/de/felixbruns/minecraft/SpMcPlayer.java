@@ -361,6 +361,7 @@ public class SpMcPlayer implements Colors {
 				);
 			}
 		}
+		/* Protects from damage smaller than 20. Player will still die from very high fall damage. */
 		else if(packet instanceof PacketPlayerHealth){
 			PacketPlayerHealth health = (PacketPlayerHealth)packet;
 			

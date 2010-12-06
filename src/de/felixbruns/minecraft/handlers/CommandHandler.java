@@ -102,10 +102,8 @@ public abstract class CommandHandler extends PacketAdapter implements Colors {
 				if(quoted){
 					token.append(c);
 				}
-				else{
-					if(token.length() > 0){
-						tokens.add(token.toString());
-					}
+				else if(token.length() > 0){
+					tokens.add(token.toString());
 					
 					token.setLength(0);
 				}

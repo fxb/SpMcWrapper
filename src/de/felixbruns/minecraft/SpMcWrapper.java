@@ -1,5 +1,6 @@
 package de.felixbruns.minecraft;
 
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -28,7 +29,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 		/* Load settings. */
 		this.settings = SpMcStorage.loadSettings();
 		
-		/* Initialize client and warp point maps. */
+		/* Initialize players, groups and warp points. */
 		this.players    = new HashMap<String, SpMcPlayer>();
 		this.groups     = SpMcStorage.loadGroups();
 		this.warpPoints = SpMcStorage.loadWarpPoints();
@@ -61,8 +62,10 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 				this.settings.getMinecraftPort()
 			);
 		}
+		
+		new SpMcHttpServer(this).start();
 	}
-    
+	
 	public void stopServer(){
 		if(!this.isConsoleAvailable()){
 			System.out.println("WARNING: Can't stop server, since console access is not available!");
@@ -166,7 +169,7 @@ public class SpMcWrapper extends Thread implements SpMcConsoleHandler {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		SpMcWrapper wrapper = new SpMcWrapper(false);
+		SpMcWrapper wrapper = new SpMcWrapper(false);		
 		
 		wrapper.start();
 		wrapper.join();
