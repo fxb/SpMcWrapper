@@ -1,6 +1,8 @@
 package de.felixbruns.minecraft.util;
 
 public enum ItemOrBlock {
+	UNDEFINED(-1, "Undefined"),
+	
 	/* Blocks. */
 	BLOCK_AIR(0, "Air"),
 	BLOCK_STONE(1, "Stone"),
@@ -179,12 +181,20 @@ public enum ItemOrBlock {
 	ITEM_GOLD_RECORD(2256, "Gold Record"),
 	ITEM_GREEN_RECORD(2257, "Green Record");
 	
-	public int    id;
-	public String name;
+	private int    id;
+	private String name;
 	
 	private ItemOrBlock(int id, String name){
 		this.id   = id;
 		this.name = name;
+	}
+	
+	public short getId(){
+		return (short)this.id;
+	}
+	
+	public String getName(){
+		return this.name;
 	}
 	
 	public static ItemOrBlock getById(int id){

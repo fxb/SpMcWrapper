@@ -13,6 +13,7 @@ import de.felixbruns.minecraft.protocol.Look;
 import de.felixbruns.minecraft.protocol.PacketStream;
 import de.felixbruns.minecraft.protocol.Position;
 import de.felixbruns.minecraft.protocol.packets.*;
+import de.felixbruns.minecraft.util.ItemOrBlock;
 
 public class SpMcPlayer implements Colors {
 	private SpMcWrapper         wrapper;
@@ -254,32 +255,32 @@ public class SpMcPlayer implements Colors {
 			
 			return null;
 		}
-		else if(packet instanceof PacketPlayerBlockPlacement && this.group != null && !this.group.isPacketAllowed(packet)){
-			PacketPlayerBlockPlacement placement = ((PacketPlayerBlockPlacement)packet);
-			PacketBlockChange          change    = new PacketBlockChange();
+		else if(packet instanceof PacketPlayerRightClick && this.group != null && !this.group.isPacketAllowed(packet)){
+			PacketPlayerRightClick rightClick = ((PacketPlayerRightClick)packet);
+			PacketBlockChange      change     = new PacketBlockChange();
 			
-			change.x        = placement.x;
-			change.y        = placement.y;
-			change.z        = placement.z;
+			change.x        = rightClick.x;
+			change.y        = rightClick.y;
+			change.z        = rightClick.z;
 			change.type     = 0;
 			change.metadata = 0;
 			
-			if(placement.direction == 0){
+			if(rightClick.direction == 0){
 				change.y--;
 			}
-			else if(placement.direction == 1){
+			else if(rightClick.direction == 1){
 				change.y++;
 			}
-			else if(placement.direction == 2){
+			else if(rightClick.direction == 2){
 				change.z--;
 			}
-			else if(placement.direction == 3){
+			else if(rightClick.direction == 3){
 				change.z++;
 			}
-			else if(placement.direction == 4){
+			else if(rightClick.direction == 4){
 				change.x--;
 			}
-			else if(placement.direction == 5){
+			else if(rightClick.direction == 5){
 				change.x++;
 			}
 			
@@ -358,6 +359,13 @@ public class SpMcPlayer implements Colors {
 				chat.message = String.format(
  					"%s§e joined the game.", (player != null) ? player.getDisplayName() : name
 				);
+			}
+		}
+		else if(packet instanceof PacketPlayerHealth){
+			PacketPlayerHealth health = (PacketPlayerHealth)packet;
+			
+			if(health.health < 20){
+				this.sendToServer(new PacketPlayerRightClick(ItemOrBlock.ITEM_GOLDEN_APPLE));
 			}
 		}
 		

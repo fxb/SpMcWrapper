@@ -101,7 +101,7 @@ public class AdminCommandHandler extends CommandHandler implements Colors {
     		
     		PacketAddToInventory a = new PacketAddToInventory();
     		
-			a.item = (short)item.id;
+			a.item = item.getId();
     		a.life = 0;
     		
     		int n = count;
